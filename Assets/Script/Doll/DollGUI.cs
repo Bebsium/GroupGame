@@ -7,14 +7,17 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Doll))]
 public class DollGUI : MonoBehaviour
 {
-    private Image cdProgress;
     private GameObject guiPrefab;
+    private Image cdProgress;
+    private Slider hpBar;
 
     private void Start()
     {
         GetComponent<Doll>().GuiAction = Action;
         guiPrefab = Resources.Load<GameObject>("Prefab/Doll/DollGUI");
-        cdProgress = Instantiate(guiPrefab, transform).FindObject("Progress").GetComponent<Image>();
+        GameObject canvas = Instantiate(guiPrefab, transform);
+        cdProgress = canvas.FindObject("Progress").GetComponent<Image>();
+        hpBar = canvas.FindObject("HPBar").GetComponent<Slider>();
     }
 
     private void Action(Global.DollComm dc)
@@ -25,7 +28,9 @@ public class DollGUI : MonoBehaviour
                 PossessCdRun(dc.Data);
                 break;
             case Global.DollCDType.SkillCd:
-                SkillCdRun();
+                break;
+            case Global.DollCDType.HPBar:
+                HPBar(dc.Data);
                 break;
         }
     }
@@ -33,13 +38,15 @@ public class DollGUI : MonoBehaviour
     private void PossessCdRun(float amount)
     {
         bool condition = amount > 0;
+        hpBar.gameObject.SetActive(false);
         cdProgress.transform.parent.gameObject.SetActive(condition);
         if (condition)
             cdProgress.fillAmount = amount;
     }
 
-    private void SkillCdRun()
+    private void HPBar(float data)
     {
-        
+        hpBar.gameObject.SetActive(data>0f);
+        hpBar.value = data;
     }
 }
