@@ -20,6 +20,17 @@ public abstract class Controller : MonoBehaviour
         _faction = faction;
     }
 
+    public bool SoulAnimate(Vector3 pos)
+    {
+        _rigi.isKinematic = true;
+        if (Vector3.Distance(transform.position,pos) > 0.1f)
+        {
+            transform.position = Vector3.Lerp(transform.position, pos, 0.1f);
+            return false;
+        }
+        return true;
+    }
+
     //----------------[Protected Area]-----------------
 
     protected Rigidbody Rigi { get { return _rigi; } }
@@ -33,7 +44,6 @@ public abstract class Controller : MonoBehaviour
         _rigi = GetComponent<Rigidbody>();
         _coll = GetComponent<Collider>();
         _render = GetComponent<Renderer>();
-        dollEffect = true;
         hasDoll = false;
     }
 
@@ -64,7 +74,6 @@ public abstract class Controller : MonoBehaviour
     private Collider _coll;
     private Renderer _render;
     private Faction _faction;
-    private bool dollEffect = true;
 
     private void Update()
     {
@@ -73,8 +82,7 @@ public abstract class Controller : MonoBehaviour
             switch (PlayerAction(this))
             {
                 case SoulState.Enter:
-                    if(dollEffect)
-                        EnterDoll();
+                    EnterDoll();
                     break;
                 case SoulState.Leave:
                     LeaveDoll();
@@ -97,7 +105,6 @@ public abstract class Controller : MonoBehaviour
         _rigi.isKinematic = true;
         _coll.enabled = false;
         _render.enabled = false;
-        dollEffect = false;
     }
 
     /// <summary>
@@ -108,7 +115,6 @@ public abstract class Controller : MonoBehaviour
         _rigi.isKinematic = false;
         _coll.enabled = true;
         _render.enabled = true;
-        dollEffect = true;
     }
 
     public ActionDelegate PlayerAction;
