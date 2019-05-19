@@ -227,6 +227,7 @@ namespace Global
     {
         PossessCd,
         SkillCd,
+        HPBar,
     }
 
     /// <summary>
