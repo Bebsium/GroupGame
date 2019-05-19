@@ -198,6 +198,7 @@ public abstract class Doll : MonoBehaviour
             _dollArea.SetActive(true);
             return;
         }
+        GuiAction?.Invoke(new DollComm(DollCDType.HPBar, _hp / _mHp));
         _dollArea.SetActive(false);
     }
 
