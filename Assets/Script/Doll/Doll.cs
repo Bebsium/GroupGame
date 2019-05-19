@@ -80,6 +80,8 @@ public abstract class Doll : MonoBehaviour
     {
         if (!Owner)
         {
+            //if (!player.SoulAnimate(transform.position))
+            //    return SoulState.Wait;
             ChangeOwner(player);
             return _state;
         }
@@ -100,7 +102,7 @@ public abstract class Doll : MonoBehaviour
     private void ChangeOwner(Controller owner)
     {
         if (owner)
-        {
+        {   
             _owner = owner;
             _state = SoulState.Enter;
             Owner.transform.SetParent(transform);

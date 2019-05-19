@@ -218,6 +218,7 @@ namespace Global
     {
         Enter,
         Leave,
+        Wait,
     };
 
     /// <summary>
