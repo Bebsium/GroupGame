@@ -17,7 +17,7 @@ public class TestDoll : Doll
     protected override void Start()
     {
         base.Start();
-        Rigi.freezeRotation = true;
+        //Rigi.freezeRotation = true;
     }
 
     protected override void Loop()
