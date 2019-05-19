@@ -17,16 +17,15 @@ public class TestDoll : Doll
     protected override void Start()
     {
         base.Start();
-        //Rigi.freezeRotation = true;
+        Rigi.freezeRotation = true;
     }
 
     protected override void Loop()
     {
         //相当于Update
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKey(KeyCode.Alpha1))
         {
-            Hurt = 30f;
-            print("Hurt");
+            Hurt = 1f;
         }
     }
 
