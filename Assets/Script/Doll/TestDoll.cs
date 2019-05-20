@@ -14,6 +14,12 @@ public class TestDoll : Doll
     //protected float HP;               --现生命值
     //protected float SPD;              --现速度
 
+    public override bool PickItem(string name)
+    {
+        print(Owner.Faction.ToString() + " picked " + name);
+        return true;
+    }
+
     protected override void Start()
     {
         base.Start();
@@ -26,6 +32,14 @@ public class TestDoll : Doll
         if (Input.GetKey(KeyCode.Alpha1))
         {
             Hurt = 1f;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            GameObject temp = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            temp.transform.position = transform.position;
+            temp.name = "Putted Item";
+            temp.AddComponent<Item>().picked = true;
         }
     }
 
