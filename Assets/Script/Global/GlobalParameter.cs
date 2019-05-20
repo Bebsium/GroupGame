@@ -120,16 +120,24 @@ namespace Global
         /// <param name="faction">阵营</param>
         public static void SampleMove(this Transform self, float spd = 0f, Faction faction = Faction.Player1)
         {
-            //float h = Input.GetAxis("Horizontal");
-            //float v = Input.GetAxis("Vertical");
             float h = 0, v = 0;
             KeyInput(ref h, ref v, faction);
             if (h != 0 || v != 0)
             {
                 Vector3 direction = new Vector3(h, 0, v).normalized;
+                Vector3 target = Vector3.Lerp(self.forward, direction, 0.2f);
                 float y = Camera.main.transform.rotation.eulerAngles.y;
                 direction = Quaternion.Euler(0, y, 0) * direction;
-                self.Translate(direction * Time.deltaTime * (spd == 0 ? Parameter.MaxSPD : spd), Space.World);
+
+                self.LookAt(self.position + target);
+                if (Vector3.Dot(direction, target) > 0)
+                {
+                    self.Translate(target * Time.deltaTime * (spd == 0 ? Parameter.MaxSPD : spd), Space.World);
+                }
+                else
+                {
+                    self.Translate(target * Time.deltaTime * (spd == 0 ? Parameter.MaxSPD : spd)*0.1f, Space.World);
+                }
             }
         }
 

@@ -15,14 +15,13 @@ public class TestPlayer : Controller
 
     //可使用函数
     //SetFaction(nowFaction)            --重设玩家阵营
-    private CharacterController cc;
-    public float speed = 0;
+    
     public Global.Faction nowFaction;
 
     protected override void Start()
     {
-        cc = GetComponent<CharacterController>();
         base.Start();
+        SetFaction(nowFaction);
         Rigi.freezeRotation = true;
     }
 
@@ -34,40 +33,44 @@ public class TestPlayer : Controller
 
     protected override void Move()
     {
-        //重写移动
-        if(Faction == Global.Faction.Player1)
-        {
-            float h=0, v=0;
-            if (Input.GetKey(Global.Key.Forward))
-            {
-                v = 1;
-            }else if (Input.GetKey(Global.Key.Back))
-            {
-                v = -1;
-            }
+        ////重写移动
+        //if(Faction == Global.Faction.Player1)
+        //{
+        //    float h=0, v=0;
+        //    if (Input.GetKey(Global.Key.Forward))
+        //    {
+        //        v = 1;
+        //    }else if (Input.GetKey(Global.Key.Back))
+        //    {
+        //        v = -1;
+        //    }
 
-            if (Input.GetKey(Global.Key.Right))
-            {
-                h = 1;
-            }else if (Input.GetKey(Global.Key.Left))
-            {
-                h = -1;
-            }
+        //    if (Input.GetKey(Global.Key.Right))
+        //    {
+        //        h = 1;
+        //    }else if (Input.GetKey(Global.Key.Left))
+        //    {
+        //        h = -1;
+        //    }
             
-            //float h = Input.GetAxis("Horizontal");
-            //float v = Input.GetAxis("Vertical");
-            if (Mathf.Abs(h) > 0.1f || Mathf.Abs(v) > 0.1)
-            {
-                Vector3 targetDir = new Vector3(h, 0, v);
-                transform.LookAt(targetDir + transform.position);
-                cc.SimpleMove(transform.forward * speed);
-            }
-        }else if(Faction == Global.Faction.Player2)
-        {
+        //    float y = Camera.main.transform.rotation.eulerAngles.y;
+        //    Vector3 targetDir = new Vector3(h, 0, v).normalized;
+        //    Vector3 tempTarget = Vector3.Lerp(transform.forward, targetDir, 0.1f);
+        //    float spd = Time.deltaTime * Global.Parameter.SoulSPD;
+        //    if (Vector3.Dot(targetDir, tempTarget)<0)
+        //    {
+        //        spd *= 0.2f;
+        //    }
+        //    tempTarget = Quaternion.Euler(0, y, 0) * tempTarget;
+        //    //transform.LookAt(tempTarget + transform.position);
+        //    transform.Translate(targetDir * spd, Space.World);
 
-        }
+        //}else if(Faction == Global.Faction.Player2)
+        //{
+
+        //}
         
-        //base.Move();
+        base.Move();
     }
 
 protected override void Jump()
