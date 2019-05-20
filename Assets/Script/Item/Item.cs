@@ -2,31 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Item : MonoBehaviour
 {
-    public GameObject itemAreaPrefab;
-    // Start is called before the first frame update
-    void Start()
-    {
-        itemAreaPrefab = Resources.Load<GameObject>("Prefab/Item/ItemArea");
-        Instantiate(itemAreaPrefab, transform);
-    }
+    public string itemName;
+    public bool picked = false;
 
-    // Update is called once per frame
-    void Update()
+    private GameObject itemAreaPrefab;
+    
+    protected virtual void Start()
     {
-        
+        gameObject.layer = LayerMask.NameToLayer("Item");
+        transform.tag = "Item";
+        itemAreaPrefab = Resources.Load<GameObject>("Prefab/Item/ItemArea");
+        if(!picked)
+            Instantiate(itemAreaPrefab, transform);
     }
 
     private void OnTriggerStay(Collider other)
     {
  
-        if (other.gameObject.tag == "Untagged")
+        if (other.gameObject.tag == "Doll")
         {
-            
             if (Input.GetKey(KeyCode.G))
             {
-                Destroy(gameObject);
+                if (other.GetComponent<Doll>().PickItem(itemName))
+                    Destroy(gameObject);
             }
         }
     }
