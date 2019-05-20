@@ -82,6 +82,7 @@ public abstract class Doll : MonoBehaviour
         {
             //if (!player.SoulAnimate(transform.position))
             //    return SoulState.Wait;
+            transform.tag = "Doll";
             ChangeOwner(player);
             return _state;
         }
@@ -130,6 +131,7 @@ public abstract class Doll : MonoBehaviour
 
     private void LeaveDollOwnerFunction()
     {
+        transform.tag = "Untagged";
         Owner.PlayerAction -= Action;
         Owner.hasDoll = false;
         ChangeOwner(null);
