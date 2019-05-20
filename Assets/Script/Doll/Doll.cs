@@ -10,6 +10,9 @@ public abstract class Doll : MonoBehaviour
     //人偶受到伤害
     public float Hurt { set { _hp -= value; } }
 
+    //拾取物件，子类必须实现
+    public abstract bool PickItem(string name);
+
     //----------------[Protected Area]-----------------
     protected int DamagedNumber { get { return _damagedNumber; } }
     protected Controller Owner { get { return _owner; } }
