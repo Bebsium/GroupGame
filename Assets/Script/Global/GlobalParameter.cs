@@ -125,10 +125,9 @@ namespace Global
             if (h != 0 || v != 0)
             {
                 Vector3 direction = new Vector3(h, 0, v).normalized;
-                Vector3 target = Vector3.Lerp(self.forward, direction, 0.2f);
                 float y = Camera.main.transform.rotation.eulerAngles.y;
                 direction = Quaternion.Euler(0, y, 0) * direction;
-
+                Vector3 target = Vector3.Lerp(self.forward, direction, 0.2f);
                 self.LookAt(self.position + target);
                 if (Vector3.Dot(direction, target) > 0)
                 {
