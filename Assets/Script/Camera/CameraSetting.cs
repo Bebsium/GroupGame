@@ -20,8 +20,9 @@ public class Camerafollow : MonoBehaviour
 
     private void Start()
     {
+
         cam = GetComponent<Camera>();
-      
+
     }
     void LateUpdate()
     {
