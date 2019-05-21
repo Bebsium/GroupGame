@@ -29,12 +29,14 @@ public class TestDoll : Doll
     protected override void Loop()
     {
         //相当于Update
-        if (Input.GetKey(KeyCode.Alpha1))
+        if ((Input.GetKey(KeyCode.Alpha1) && Owner.Faction == Global.Faction.Player1)
+            || (Input.GetKey(KeyCode.KeypadDivide) && Owner.Faction == Global.Faction.Player2))
         {
             Hurt = 1f;
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha2))
+        if ((Input.GetKeyDown(KeyCode.Alpha2) && Owner.Faction == Global.Faction.Player1)
+            || (Input.GetKeyDown(KeyCode.KeypadMultiply) && Owner.Faction == Global.Faction.Player2))
         {
             GameObject temp = GameObject.CreatePrimitive(PrimitiveType.Cube);
             temp.transform.position = transform.position;
