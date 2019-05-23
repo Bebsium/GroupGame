@@ -74,11 +74,13 @@ public abstract class Controller : MonoBehaviour
     {
         if (PlayerAction != null)
         {
-            switch (PlayerAction(this))
+            SoulState temp;
+            switch (temp = PlayerAction(this))
             {
                 case SoulState.Enter:
-                    if (SoulAnimate()) 
-                        EnterDoll();
+                    SoulAnimate();
+                    break;
+                case SoulState.Stay:
                     break;
                 case SoulState.Leave:
                     LeaveDoll();
@@ -94,13 +96,24 @@ public abstract class Controller : MonoBehaviour
     }
 
     /// <summary>
-    /// 进入人偶的灵魂状态改变
+    /// 灵魂进入人偶运动动画
     /// </summary>
-    private void EnterDoll()
+    /// <returns>true 动画结束 灵魂状态改变； false 动画进行中</returns>
+    private bool SoulAnimate()
     {
-        //_rigi.isKinematic = true;
+        if (_animateEnd)
+            return true;
+
+        _rigi.isKinematic = true;
+        if (Vector3.Distance(transform.position, _animateTarget) > 0.01f)
+        {
+            transform.position = Vector3.Lerp(transform.position, _animateTarget, 0.1f);
+            return false;
+        }
+        _animateEnd = true;
         _coll.enabled = false;
         _render.enabled = false;
+        return true;
     }
 
     /// <summary>
@@ -112,25 +125,6 @@ public abstract class Controller : MonoBehaviour
         _coll.enabled = true;
         _render.enabled = true;
         _animateEnd = false;
-    }
-
-    /// <summary>
-    /// 灵魂进入人偶运动动画
-    /// </summary>
-    /// <returns>true 动画结束； false 动画进行中</returns>
-    private bool SoulAnimate()
-    {
-        if (_animateEnd)
-            return true;
-        
-        _rigi.isKinematic = true;
-        if (Vector3.Distance(transform.position, _animateTarget) > 0.01f)
-        {
-            transform.position = Vector3.Lerp(transform.position, _animateTarget, 0.1f);
-            return false;
-        }
-        _animateEnd = true;
-        return true;
     }
 
     public ActionDelegate PlayerAction;

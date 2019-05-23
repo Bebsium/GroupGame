@@ -224,6 +224,7 @@ namespace Global
     public enum SoulState
     {
         Enter,
+        Stay,
         Leave,
         Wait,
     };

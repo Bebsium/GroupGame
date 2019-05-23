@@ -89,7 +89,7 @@ public abstract class Doll : MonoBehaviour
             ChangeOwner(player);
             return _state;
         }
-        if (!Damaged)
+        if (!Damaged && _state == SoulState.Stay)
         {
             Move();
             Jump();
@@ -110,7 +110,7 @@ public abstract class Doll : MonoBehaviour
             _owner = owner;
             _state = SoulState.Enter;
             Owner.transform.SetParent(transform);
-            //_owner.transform.localPosition = Vector3.zero;
+            StartCoroutine(WaitForAnimate());
         }
         else
         {
@@ -118,6 +118,13 @@ public abstract class Doll : MonoBehaviour
             Owner.transform.SetParent(null);
             _owner = owner;
         }
+    }
+
+    private IEnumerator WaitForAnimate()
+    {
+        yield return new WaitForSeconds(1f);
+        _state = SoulState.Stay;
+        _owner.transform.localPosition = Vector3.zero;
     }
 
     /// <summary>
