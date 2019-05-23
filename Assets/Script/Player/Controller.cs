@@ -11,6 +11,9 @@ public abstract class Controller : MonoBehaviour
     [HideInInspector]
     public bool hasDoll = false;
 
+    public Vector3 AnimateTarget { set { _animateTarget = value; } }
+
+
     /// <summary>
     /// 设置阵营
     /// </summary>
@@ -18,17 +21,6 @@ public abstract class Controller : MonoBehaviour
     public void SetFaction(Faction faction)
     {
         _faction = faction;
-    }
-
-    public bool SoulAnimate(Vector3 pos)
-    {
-        _rigi.isKinematic = true;
-        if (Vector3.Distance(transform.position,pos) > 0.1f)
-        {
-            transform.position = Vector3.Lerp(transform.position, pos, 0.1f);
-            return false;
-        }
-        return true;
     }
 
     //----------------[Protected Area]-----------------
@@ -74,6 +66,9 @@ public abstract class Controller : MonoBehaviour
     private Collider _coll;
     private Renderer _render;
     private Faction _faction;
+    [SerializeField]
+    private Vector3 _animateTarget;
+    private bool _animateEnd = false;
 
     private void Update()
     {
@@ -82,7 +77,8 @@ public abstract class Controller : MonoBehaviour
             switch (PlayerAction(this))
             {
                 case SoulState.Enter:
-                    EnterDoll();
+                    if (SoulAnimate()) 
+                        EnterDoll();
                     break;
                 case SoulState.Leave:
                     LeaveDoll();
@@ -102,7 +98,7 @@ public abstract class Controller : MonoBehaviour
     /// </summary>
     private void EnterDoll()
     {
-        _rigi.isKinematic = true;
+        //_rigi.isKinematic = true;
         _coll.enabled = false;
         _render.enabled = false;
     }
@@ -115,6 +111,26 @@ public abstract class Controller : MonoBehaviour
         _rigi.isKinematic = false;
         _coll.enabled = true;
         _render.enabled = true;
+        _animateEnd = false;
+    }
+
+    /// <summary>
+    /// 灵魂进入人偶运动动画
+    /// </summary>
+    /// <returns>true 动画结束； false 动画进行中</returns>
+    private bool SoulAnimate()
+    {
+        if (_animateEnd)
+            return true;
+        
+        _rigi.isKinematic = true;
+        if (Vector3.Distance(transform.position, _animateTarget) > 0.01f)
+        {
+            transform.position = Vector3.Lerp(transform.position, _animateTarget, 0.1f);
+            return false;
+        }
+        _animateEnd = true;
+        return true;
     }
 
     public ActionDelegate PlayerAction;

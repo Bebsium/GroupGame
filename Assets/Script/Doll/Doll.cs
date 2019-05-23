@@ -110,7 +110,7 @@ public abstract class Doll : MonoBehaviour
             _owner = owner;
             _state = SoulState.Enter;
             Owner.transform.SetParent(transform);
-            _owner.transform.localPosition = Vector3.zero;
+            //_owner.transform.localPosition = Vector3.zero;
         }
         else
         {
@@ -223,6 +223,7 @@ public abstract class Doll : MonoBehaviour
             if ((temp.Faction == Faction.Player1 && Input.GetKeyDown(Key.Enter))
                 || (temp.Faction == Faction.Player2 && Input.GetKeyDown(Key.Enter2)))
             {
+                temp.AnimateTarget = transform.position;
                 temp.PlayerAction = Action;
                 temp.hasDoll = true;
             }
