@@ -44,17 +44,8 @@ public class TestDoll : Doll
             temp.AddComponent<Item>().picked = true;
         }
 
-        //Add Buff Test
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            AddBuff(Global.BuffSort.Invulnerable, 1f);
-        }
-        if (HasBuff(Global.BuffSort.Invulnerable))
-        {
-            print("Invulnerable");
-        }
-
-        if (Input.GetKeyDown(KeyCode.M))
+        //添加禁锢效果
+        if (Input.GetKeyDown(KeyCode.P))
         {
             AddBuff(Global.BuffSort.Prisoner, 2f);
         }
@@ -66,6 +57,8 @@ public class TestDoll : Doll
 
     protected override void Move()
     {
+        if (HasBuff(Global.BuffSort.Prisoner))
+            return;
         //重写移动
         base.Move();
     }
