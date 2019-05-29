@@ -10,6 +10,24 @@ public abstract class Doll : MonoBehaviour
     //人偶受到伤害
     public float Hurt { set { _hp -= value; } }
 
+    /// <summary>
+    /// 添加Buff
+    /// </summary>
+    /// <param name="buff">Buff种类</param>
+    /// <param name="time">Buff持续时间</param>
+    public void AddBuff(BuffSort buff, float time)
+    {
+        int index = _buff.FindIndex(n => n.Sort == buff);
+        if (index >= 0)
+        {
+            var temp = _buff[index];
+            temp.Time += time;
+            _buff[index] = temp;
+        }
+        else
+            _buff.Add(new Global.Buff(time, buff));
+    }
+
     //拾取物件，子类必须实现
     public abstract bool PickItem(string name);
 
@@ -20,6 +38,7 @@ public abstract class Doll : MonoBehaviour
     protected float ATK { get { return _atk; } }
     protected float HP { get { return _hp; } }
     protected float SPD { get { return _spd; } }
+    protected List<Buff> Buff { get { return _buff; } }
 
     /// <summary>
     /// 初始化
@@ -34,6 +53,7 @@ public abstract class Doll : MonoBehaviour
         _state = SoulState.Leave;
         _damagedNumber = 0;
         _owner = null;
+        _buff = new List<Buff>();
         ReInit();
     }
 
@@ -58,6 +78,13 @@ public abstract class Doll : MonoBehaviour
         Rigi.SampleJump(Owner.Faction);
     }
 
+    protected bool HasBuff(BuffSort buff)
+    {
+        if(_buff.FindIndex(n => n.Sort == buff) >= 0)
+            return true;
+        return false;
+    }
+
     #region Private
     private Controller _owner;
     private Rigidbody _rigi;
@@ -73,6 +100,8 @@ public abstract class Doll : MonoBehaviour
     private float _cd;
     private GameObject _dollAreaPrefab;
     private GameObject _dollArea;
+
+    private List<Buff> _buff;
 
     /// <summary>
     /// 操纵人偶
@@ -91,9 +120,10 @@ public abstract class Doll : MonoBehaviour
         }
         if (!Damaged && _state == SoulState.Stay)
         {
+            BuffCountDown();
+            Loop();
             Move();
             Jump();
-            Loop();
             LeaveDoll();
         }
         return _state;
@@ -234,6 +264,22 @@ public abstract class Doll : MonoBehaviour
                 temp.PlayerAction = Action;
                 temp.hasDoll = true;
             }
+        }
+    }
+
+    /// <summary>
+    /// Buff倒计时
+    /// </summary>
+    private void BuffCountDown()
+    {
+        for (int i = 0; i < _buff.Count; i++)
+        {
+            var temp = _buff[i];
+            temp.Time -= Time.deltaTime;
+            if(temp.Time < 0)
+                _buff.RemoveAt(i);
+            else
+                _buff[i] = temp;
         }
     }
 

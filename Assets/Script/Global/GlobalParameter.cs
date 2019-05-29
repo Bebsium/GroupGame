@@ -257,4 +257,33 @@ namespace Global
 
     public delegate SoulState ActionDelegate(Controller player);
     public delegate void GUIDelegate(DollComm dc);
+
+    /// <summary>
+    /// Buff状态
+    /// </summary>
+    public struct Buff
+    {
+        public float Time { get { return _time; } set { _time = value; } }
+        public BuffSort Sort { get { return _sort; } }
+
+        public Buff(float time, BuffSort sort)
+        {
+            _time = time;
+            _sort = sort;
+        }
+        #region private
+        private float _time;
+        private BuffSort _sort;
+        #endregion
+    }
+
+    /// <summary>
+    /// Buff种类
+    /// </summary>
+    public enum BuffSort
+    {
+        Prisoner,           //禁锢
+        Invulnerable,    //无敌
+        Stun,                 //眩晕
+    }
 }

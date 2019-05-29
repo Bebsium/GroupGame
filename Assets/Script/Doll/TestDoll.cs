@@ -43,6 +43,25 @@ public class TestDoll : Doll
             temp.name = "Putted Item";
             temp.AddComponent<Item>().picked = true;
         }
+
+        //Add Buff Test
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            AddBuff(Global.BuffSort.Invulnerable, 1f);
+        }
+        if (HasBuff(Global.BuffSort.Invulnerable))
+        {
+            print("Invulnerable");
+        }
+
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            AddBuff(Global.BuffSort.Prisoner, 2f);
+        }
+        if (HasBuff(Global.BuffSort.Prisoner))
+        {
+            print("Prisoner");
+        }
     }
 
     protected override void Move()
