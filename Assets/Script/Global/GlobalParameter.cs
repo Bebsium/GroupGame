@@ -39,7 +39,6 @@ namespace Global
     public static class Key
     {
         #region 键位
-        //Player1
         public static KeyCode Enter { get { return _enter; } }
         public static KeyCode Leave { get { return _leave; } }
         public static KeyCode Jump { get { return _jump; } }
@@ -47,14 +46,6 @@ namespace Global
         public static KeyCode Back { get { return _back; } }
         public static KeyCode Right { get { return _right; } }
         public static KeyCode Left { get { return _left; } }
-        //Player2
-        public static KeyCode Enter2 { get { return _enter2; } }
-        public static KeyCode Leave2 { get { return _leave2; } }
-        public static KeyCode Jump2 { get { return _jump2; } }
-        public static KeyCode Forward2 { get { return _forward2; } }
-        public static KeyCode Back2 { get { return _back2; } }
-        public static KeyCode Right2 { get { return _right2; } }
-        public static KeyCode Left2 { get { return _left2; } }
         #endregion
         /// <summary>
         /// 改变键位
@@ -66,7 +57,6 @@ namespace Global
         {
             switch (s)
             {
-                //Player1
                 case "Enter": _enter = code; break;
                 case "Leave": _leave = code; break;
                 case "Jump": _jump = code; break;
@@ -74,21 +64,12 @@ namespace Global
                 case "Back": _back = code; break;
                 case "Right": _right = code; break;
                 case "Left": _left = code; break;
-                //Player2
-                case "Enter2": _enter2 = code; break;
-                case "Leave2": _leave2 = code; break;
-                case "Jump2": _jump2 = code; break;
-                case "Forward2": _forward2 = code; break;
-                case "Back2": _back2 = code; break;
-                case "Right2": _right2 = code; break;
-                case "Left2": _left2 = code; break;
                 default:
                     return false;
             }
             return true;
         }
         #region private
-        //Player1
         private static KeyCode _enter = KeyCode.Q;
         private static KeyCode _leave = KeyCode.E;
         private static KeyCode _jump = KeyCode.Space;
@@ -96,14 +77,6 @@ namespace Global
         private static KeyCode _back = KeyCode.S;
         private static KeyCode _right = KeyCode.D;
         private static KeyCode _left = KeyCode.A;
-        //Player2
-        private static KeyCode _enter2 = KeyCode.Keypad7;
-        private static KeyCode _leave2 = KeyCode.Keypad9;
-        private static KeyCode _jump2 = KeyCode.Keypad0;
-        private static KeyCode _forward2 = KeyCode.Keypad8;
-        private static KeyCode _back2 = KeyCode.Keypad2;
-        private static KeyCode _right2 = KeyCode.Keypad6;
-        private static KeyCode _left2 = KeyCode.Keypad4;
         #endregion
     }
 
@@ -117,11 +90,10 @@ namespace Global
         /// </summary>
         /// <param name="self">对象</param>
         /// <param name="spd">速度</param>
-        /// <param name="faction">阵营</param>
-        public static void SampleMove(this Transform self, float spd = 0f, Faction faction = Faction.Player1)
+        public static void SampleMove(this Transform self, float spd = 0f)
         {
             float h = 0, v = 0;
-            KeyInput(ref h, ref v, faction);
+            KeyInput(ref h, ref v);
             if (h != 0 || v != 0)
             {
                 Vector3 direction = new Vector3(h, 0, v).normalized;
@@ -144,15 +116,10 @@ namespace Global
         /// 基础跳跃
         /// </summary>
         /// <param name="self">对象</param>
-        /// <param name="faction">阵营</param>
         /// <param name="force">力度</param>
-        public static void SampleJump(this Rigidbody self, Faction faction = Faction.Player1, float force = 5f)
+        public static void SampleJump(this Rigidbody self, float force = 5f)
         {
-            if (faction == Faction.Player1 && Input.GetKeyDown(Key.Jump))
-            {
-                self.AddForce(Vector3.up * force, ForceMode.Impulse);
-            }
-            else if (faction == Faction.Player2 && Input.GetKeyDown(Key.Jump2))
+            if (Input.GetKeyDown(Key.Jump))
             {
                 self.AddForce(Vector3.up * force, ForceMode.Impulse);
             }
@@ -180,30 +147,16 @@ namespace Global
         /// </summary>
         /// <param name="h">水平方向</param>
         /// <param name="v">竖直方向</param>
-        /// <param name="faction">阵营</param>
-        private static void KeyInput(ref float h, ref float v, Faction faction)
+        private static void KeyInput(ref float h, ref float v)
         {
-            if (faction == Faction.Player1)
-            {
-                if (Input.GetKey(Key.Forward))
-                    v = 1f;
-                if (Input.GetKey(Key.Back))
-                    v = -1f;
-                if (Input.GetKey(Key.Right))
-                    h = 1f;
-                if (Input.GetKey(Key.Left))
-                    h = -1f;
-            } else if (faction == Faction.Player2)
-            {
-                if (Input.GetKey(Key.Forward2))
-                    v = 1f;
-                if (Input.GetKey(Key.Back2))
-                    v = -1f;
-                if (Input.GetKey(Key.Right2))
-                    h = 1f;
-                if (Input.GetKey(Key.Left2))
-                    h = -1f;
-            }
+            if (Input.GetKey(Key.Forward))
+                v = 1f;
+            if (Input.GetKey(Key.Back))
+                v = -1f;
+            if (Input.GetKey(Key.Right))
+                h = 1f;
+            if (Input.GetKey(Key.Left))
+                h = -1f;
         }
         #endregion
     }
@@ -211,12 +164,12 @@ namespace Global
     /// <summary>
     /// 枚举-阵营
     /// </summary>
-    public enum Faction
-    {
-        Player1,
-        Player2,
-        Computer,
-    }
+    //public enum Faction
+    //{
+    //    Player1,
+    //    Player2,
+    //    Computer,
+    //}
 
     /// <summary>
     /// 枚举-灵魂状态

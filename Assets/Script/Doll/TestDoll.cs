@@ -16,7 +16,7 @@ public class TestDoll : Doll
 
     public override bool PickItem(string name)
     {
-        print(Owner.Faction.ToString() + " picked " + name);
+        print(Owner.playerName + " picked " + name);
         return true;
     }
 
@@ -29,14 +29,12 @@ public class TestDoll : Doll
     protected override void Loop()
     {
         //相当于Update
-        if ((Input.GetKey(KeyCode.Alpha1) && Owner.Faction == Global.Faction.Player1)
-            || (Input.GetKey(KeyCode.KeypadDivide) && Owner.Faction == Global.Faction.Player2))
+        if (Input.GetKey(KeyCode.Alpha1))
         {
             Hurt = 1f;
         }
 
-        if ((Input.GetKeyDown(KeyCode.Alpha2) && Owner.Faction == Global.Faction.Player1)
-            || (Input.GetKeyDown(KeyCode.KeypadMultiply) && Owner.Faction == Global.Faction.Player2))
+        if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             GameObject temp = GameObject.CreatePrimitive(PrimitiveType.Cube);
             temp.transform.position = transform.position;

@@ -16,7 +16,7 @@ MonoBehaviour:
   iconMaxWidth: 128
   title: GroupGame
   sections:
-  - heading: "Player1\u64CD\u4F5C"
+  - heading: "Player\u64CD\u4F5C"
     linkText: 
     url: 
     text:
@@ -28,25 +28,7 @@ MonoBehaviour:
     - "\u9000\u51FA\u4EBA\u5076:E"
     - "\u62FE\u53D6\u9053\u5177:G"
     - "\u653E\u7F6E\u7269\u4F53:2"
-  - heading: "Player2\u64CD\u4F5C"
-    linkText: 
-    url: 
-    text:
-    - "\u4E0A:8  \u4E0B:2"
-    - "\u5DE6:4  \u53F3:6"
-    - "\u8DF3\u8DC3:0"
-    - "\u53D7\u4F24:/"
-    - "\u8FDB\u5165\u4EBA\u5076:7"
-    - "\u9000\u51FA\u4EBA\u5076:9"
-    - "\u62FE\u53D6\u9053\u5177:+"
-    - "\u653E\u7F6E\u7269\u4F53:*"
   - heading: GitHub
     linkText: "\u4ED3\u5E93\u94FE\u63A5"
     url: https://github.com/Bebsium/GroupGame.git
-    text:
-    - 
-    - 
-    - 
-    - 
-    - 
-    - 
+    text: []

@@ -15,20 +15,16 @@ public class TestPlayer : Controller
 
     //可使用函数
     //SetFaction(nowFaction)            --重设玩家阵营
-    
-    public Global.Faction nowFaction;
 
     protected override void Start()
     {
         base.Start();
-        SetFaction(nowFaction);
         Rigi.freezeRotation = true;
     }
 
     protected override void Loop()
     {
         //相当于Update
-        SetFaction(nowFaction);
     }
 
     protected override void Move()
@@ -73,7 +69,7 @@ public class TestPlayer : Controller
         base.Move();
     }
 
-protected override void Jump()
+    protected override void Jump()
     {
         //重写跳跃
         base.Jump();

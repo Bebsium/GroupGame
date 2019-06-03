@@ -1,27 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using Global;
 using UnityEngine;
 
-public abstract class Controller : MonoBehaviour
+[RequireComponent(typeof(PhotonView))]
+[RequireComponent(typeof(PhotonTransformView))]
+[RequireComponent(typeof(Rigidbody))]
+public abstract class Controller : MonoBehaviourPunCallbacks
 {
     //----------------[Public Area]--------------------
-    //玩家阵营 Player1 Player2 Computer
-    public Faction Faction { get { return _faction; } }
+    public string playerName;
     [HideInInspector]
     public bool hasDoll = false;
-
     public Vector3 AnimateTarget { set { _animateTarget = value; } }
 
-
-    /// <summary>
-    /// 设置阵营
-    /// </summary>
-    /// <param name="faction">新阵营</param>
-    public void SetFaction(Faction faction)
-    {
-        _faction = faction;
-    }
 
     //----------------[Protected Area]-----------------
 
@@ -36,6 +29,7 @@ public abstract class Controller : MonoBehaviour
         _rigi = GetComponent<Rigidbody>();
         _coll = GetComponent<Collider>();
         _render = GetComponent<Renderer>();
+        _pv = GetComponent<PhotonView>();
         hasDoll = false;
     }
 
@@ -44,7 +38,7 @@ public abstract class Controller : MonoBehaviour
     /// </summary>
     protected virtual void Move()
     {
-        transform.SampleMove(Parameter.SoulSPD, Faction);
+        transform.SampleMove(Parameter.SoulSPD);
     }
 
     /// <summary>
@@ -52,7 +46,7 @@ public abstract class Controller : MonoBehaviour
     /// </summary>
     protected virtual void Jump()
     {
-        Rigi.SampleJump(Faction);
+        Rigi.SampleJump();
     }
 
     /// <summary>
@@ -65,13 +59,15 @@ public abstract class Controller : MonoBehaviour
     private Rigidbody _rigi;
     private Collider _coll;
     private Renderer _render;
-    private Faction _faction;
     [SerializeField]
+    private PhotonView _pv;
     private Vector3 _animateTarget;
     private bool _animateEnd = false;
 
     private void Update()
     {
+        if (!_pv.IsMine)
+            return;
         if (PlayerAction != null)
         {
             SoulState temp;

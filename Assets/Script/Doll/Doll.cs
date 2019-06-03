@@ -8,7 +8,7 @@ public abstract class Doll : MonoBehaviour
 {
     //----------------[Public Area]--------------------
     //人偶受到伤害
-    public float Hurt { set { _hp -= value; } }
+    public virtual float Hurt { set { _hp -= value; } }
 
     /// <summary>
     /// 添加Buff
@@ -17,6 +17,8 @@ public abstract class Doll : MonoBehaviour
     /// <param name="time">Buff持续时间</param>
     public void AddBuff(BuffSort buff, float time)
     {
+        if (_buff.FindIndex(n => n.Sort == BuffSort.Invulnerable) >= 0)
+            return;
         int index = _buff.FindIndex(n => n.Sort == buff);
         if (index >= 0)
         {
@@ -26,6 +28,25 @@ public abstract class Doll : MonoBehaviour
         }
         else
             _buff.Add(new Global.Buff(time, buff));
+    }
+
+    /// <summary>
+    /// 移除全部Buff
+    /// </summary>
+    public void RemoveBuff()
+    {
+        _buff.Clear();
+    }
+
+    /// <summary>
+    /// 移除指定buff
+    /// </summary>
+    /// <param name="buff">被移除buff</param>
+    public void RemoveBuff(BuffSort buff)
+    {
+        int index = _buff.FindIndex(n => n.Sort == buff);
+        if (index >= 0)
+            _buff.RemoveAt(index);
     }
 
     //拾取物件，子类必须实现
@@ -67,7 +88,7 @@ public abstract class Doll : MonoBehaviour
     /// </summary>
     protected virtual void Move()
     {
-        transform.SampleMove(SPD, Owner.Faction);
+        transform.SampleMove(SPD);
     }
 
     /// <summary>
@@ -75,9 +96,14 @@ public abstract class Doll : MonoBehaviour
     /// </summary>
     protected virtual void Jump()
     {
-        Rigi.SampleJump(Owner.Faction);
+        Rigi.SampleJump();
     }
 
+    /// <summary>
+    /// 判断是否有特定buff
+    /// </summary>
+    /// <param name="buff">查询buff</param>
+    /// <returns>true 有</returns>
     protected bool HasBuff(BuffSort buff)
     {
         if(_buff.FindIndex(n => n.Sort == buff) >= 0)
@@ -162,8 +188,7 @@ public abstract class Doll : MonoBehaviour
     /// </summary>
     private void LeaveDoll()
     {
-        if ((Owner.Faction == Faction.Player1 && Input.GetKeyDown(Key.Leave))
-            || (Owner.Faction == Faction.Player2 && Input.GetKeyDown(Key.Leave2)))
+        if (Input.GetKeyDown(Key.Leave))
         {
             LeaveDollOwnerFunction();
         }
@@ -257,8 +282,7 @@ public abstract class Doll : MonoBehaviour
             Controller temp = other.GetComponent<Controller>();
             if (temp.hasDoll || _cd > 0f)
                 return;
-            if ((temp.Faction == Faction.Player1 && Input.GetKeyDown(Key.Enter))
-                || (temp.Faction == Faction.Player2 && Input.GetKeyDown(Key.Enter2)))
+            if (Input.GetKeyDown(Key.Enter))
             {
                 temp.AnimateTarget = transform.position;
                 temp.PlayerAction = Action;
