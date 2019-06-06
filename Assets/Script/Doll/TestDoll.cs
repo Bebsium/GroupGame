@@ -51,6 +51,12 @@ public class TestDoll : Doll
         {
             print("Prisoner");
         }
+
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            print("AttributePromotion");
+            AttributePromotion(10, 10, 10, 5);
+        }
     }
 
     protected override void Move()

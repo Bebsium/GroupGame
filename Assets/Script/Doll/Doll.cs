@@ -8,7 +8,7 @@ public abstract class Doll : MonoBehaviour
 {
     //----------------[Public Area]--------------------
     //人偶受到伤害
-    public virtual float Hurt { set { _hp -= value; } }
+    public virtual float Hurt { set { _hp -= value * (1 - _defense); } }
 
     /// <summary>
     /// 添加Buff
@@ -62,6 +62,31 @@ public abstract class Doll : MonoBehaviour
     protected List<Buff> Buff { get { return _buff; } }
 
     /// <summary>
+    /// 暂时提升属性
+    /// </summary>
+    /// <param name="atk">提升攻击力值</param>
+    /// <param name="spd">提升速度值</param>
+    /// <param name="def">提升防御力值</param>
+    /// <param name="time">提升属性时间</param>
+    /// <returns></returns>
+    protected void AttributePromotion(float atk,float spd,float def,float time)
+    {
+        if (!_attrPromoted)
+        {
+            _tempAtk = _atk;
+            _tempSpd = _spd;
+            _tempDefense = _defense;
+            _attrPromoted = true;
+            StartCoroutine(AttrProTimeCalc(atk, spd, def, time));
+        }
+        else
+        {
+            StopCoroutine("AttrProTimeCalc");
+            StartCoroutine(AttrProTimeCalc(atk, spd, def, time));
+        }
+    }
+
+    /// <summary>
     /// 初始化
     /// </summary>
     protected virtual void Start()
@@ -73,6 +98,7 @@ public abstract class Doll : MonoBehaviour
         _dollArea = Instantiate(_dollAreaPrefab, transform);
         _state = SoulState.Leave;
         _damagedNumber = 0;
+        _defense = 0;
         _owner = null;
         _buff = new List<Buff>();
         ReInit();
@@ -120,12 +146,18 @@ public abstract class Doll : MonoBehaviour
     private float _hp;
     private float _atk;
     private float _spd;
+    private float _defense;
     private int _damagedNumber;
     private SoulState _state;
     private float _mCd;
     private float _cd;
     private GameObject _dollAreaPrefab;
     private GameObject _dollArea;
+
+    private float _tempAtk;
+    private float _tempSpd;
+    private float _tempDefense;
+    private bool _attrPromoted = false;
 
     private List<Buff> _buff;
 
@@ -305,6 +337,26 @@ public abstract class Doll : MonoBehaviour
             else
                 _buff[i] = temp;
         }
+    }
+
+    /// <summary>
+    /// 协程，暂时提升属性
+    /// </summary>
+    /// <param name="atk">提升攻击力值</param>
+    /// <param name="spd">提升速度值</param>
+    /// <param name="def">提升防御力值</param>
+    /// <param name="time">提升属性时间</param>
+    /// <returns></returns>
+    private IEnumerator AttrProTimeCalc(float atk, float spd, float def, float time)
+    {
+        _atk += atk;
+        _spd += spd;
+        _defense += def;
+        yield return new WaitForSeconds(time);
+        _atk = _tempAtk;
+        _spd = _tempSpd;
+        _defense = _tempDefense;
+        _attrPromoted = false;
     }
 
     //人偶界面代理
