@@ -36,8 +36,8 @@ public class CameraFollow : MonoBehaviour
         Vector3 rot = transform.localRotation.eulerAngles;
         rotY = rot.y;
         rotX = rot.x;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
     }
 
     // Update is called once per frame
@@ -64,7 +64,8 @@ public class CameraFollow : MonoBehaviour
     }
     void CameraUpdater()
     {
-
+        if (CameraFollowObj == null)
+            return;
         Transform target = CameraFollowObj.transform;
         float step = CameraMoveSpeed * Time.deltaTime;
         transform.position = Vector3.MoveTowards(transform.position, target.position, step);

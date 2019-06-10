@@ -63,6 +63,10 @@ public abstract class Doll : MonoBehaviourPun
         player.PlayerAction = Action;
         player.hasDoll = true;
         photonView.TransferOwnership(player.GetComponent<PhotonView>().Owner);
+        if (!photonView.IsMine)
+        {
+            gameObject.AddComponent<DollGUI>();
+        }
         return true;
     }
 
@@ -248,6 +252,10 @@ public abstract class Doll : MonoBehaviourPun
         transform.tag = "Untagged";
         Owner.PlayerAction -= Action;
         Owner.hasDoll = false;
+        if (!photonView.IsMine)
+        {
+            Destroy(GetComponent<DollGUI>());
+        }
         photonView.TransferOwnership(0);
         ChangeOwner(null);
         ReInit();
