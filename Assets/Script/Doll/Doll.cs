@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using Global;
 using UnityEngine;
 
+[RequireComponent(typeof(PhotonView))]
+[RequireComponent(typeof(PhotonTransformView))]
 [RequireComponent(typeof(Rigidbody))]
-public abstract class Doll : MonoBehaviour
+public abstract class Doll : MonoBehaviourPun
 {
     //----------------[Public Area]--------------------
     //人偶受到伤害
@@ -51,6 +54,17 @@ public abstract class Doll : MonoBehaviour
 
     //拾取物件，子类必须实现
     public abstract bool PickItem(string name);
+
+    public bool SetOwner(Controller player)
+    {
+        if (player.hasDoll || _cd > 0f)
+            return false;
+        player.AnimateTarget = transform.position;
+        player.PlayerAction = Action;
+        player.hasDoll = true;
+        photonView.TransferOwnership(player.GetComponent<PhotonView>().Owner);
+        return true;
+    }
 
     //----------------[Protected Area]-----------------
     protected int DamagedNumber { get { return _damagedNumber; } }
@@ -166,7 +180,7 @@ public abstract class Doll : MonoBehaviour
     /// </summary>
     /// <param name="player">玩家</param>
     /// <returns></returns>
-    private SoulState Action(Controller player)
+    private SoulState Action(Controller player, bool isMine)
     {
         if (!Owner)
         {
@@ -179,9 +193,12 @@ public abstract class Doll : MonoBehaviour
         if (!Damaged && _state == SoulState.Stay)
         {
             BuffCountDown();
-            Loop();
-            Move();
-            Jump();
+            if (isMine)
+            {
+                Loop();
+                Move();
+                Jump();
+            }
             LeaveDoll();
         }
         return _state;
@@ -231,6 +248,7 @@ public abstract class Doll : MonoBehaviour
         transform.tag = "Untagged";
         Owner.PlayerAction -= Action;
         Owner.hasDoll = false;
+        photonView.TransferOwnership(0);
         ChangeOwner(null);
         ReInit();
         _cd = _mCd;

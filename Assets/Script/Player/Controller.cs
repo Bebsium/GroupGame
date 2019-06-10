@@ -7,7 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(PhotonView))]
 [RequireComponent(typeof(PhotonTransformView))]
 [RequireComponent(typeof(Rigidbody))]
-public abstract class Controller : MonoBehaviourPunCallbacks
+public abstract class Controller : MonoBehaviourPun
 {
     //----------------[Public Area]--------------------
     public string playerName;
@@ -29,7 +29,6 @@ public abstract class Controller : MonoBehaviourPunCallbacks
         _rigi = GetComponent<Rigidbody>();
         _coll = GetComponent<Collider>();
         _render = GetComponent<Renderer>();
-        _pv = GetComponent<PhotonView>();
         hasDoll = false;
     }
 
@@ -59,19 +58,23 @@ public abstract class Controller : MonoBehaviourPunCallbacks
     private Rigidbody _rigi;
     private Collider _coll;
     private Renderer _render;
-    [SerializeField]
-    private PhotonView _pv;
     private Vector3 _animateTarget;
     private bool _animateEnd = false;
 
     private void Update()
     {
-        if (!_pv.IsMine)
+        if (!photonView.IsMine)
             return;
+        photonView.RPC("RPCUpdate", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void RPCUpdate()
+    {
         if (PlayerAction != null)
         {
             SoulState temp;
-            switch (temp = PlayerAction(this))
+            switch (temp = PlayerAction(this, photonView.IsMine))
             {
                 case SoulState.Enter:
                     SoulAnimate();
@@ -83,11 +86,12 @@ public abstract class Controller : MonoBehaviourPunCallbacks
                     break;
             }
         }
-        else
+        else if (photonView.IsMine)
         {
             Move();
             Jump();
             Loop();
+            SpriteAction();
         }
     }
 
@@ -121,6 +125,22 @@ public abstract class Controller : MonoBehaviourPunCallbacks
         _coll.enabled = true;
         _render.enabled = true;
         _animateEnd = false;
+    }
+
+    /// <summary>
+    /// 进入人偶
+    /// </summary>
+    private void SpriteAction()
+    {
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, 10f, LayerMask.GetMask(new string[] { "Doll" })))
+            {
+                hit.transform.GetComponent<Doll>().SetOwner(this);
+            }
+        }
     }
 
     public ActionDelegate PlayerAction;

@@ -19,8 +19,9 @@ public class GameNetController : MonoBehaviour
         if (!PhotonNetwork.IsConnected)
         {
             UnityEngine.SceneManagement.SceneManager.LoadScene("NetLobby");
+            player = PhotonNetwork.Instantiate(Path.Combine("Prefab", "Player", "Player"), Vector3.zero + Vector3.up * 4, Quaternion.identity);
+            print(player);
+            CameraFollow.instance.CameraFollowObj = player;
         }
-
-        player = PhotonNetwork.Instantiate(Path.Combine("Prefab", "Player", "Player"), Vector3.zero + Vector3.up * 4, Quaternion.identity);
     }
 }

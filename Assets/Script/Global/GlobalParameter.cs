@@ -208,7 +208,7 @@ namespace Global
         private float _data;
     }
 
-    public delegate SoulState ActionDelegate(Controller player);
+    public delegate SoulState ActionDelegate(Controller player, bool isMine);
     public delegate void GUIDelegate(DollComm dc);
 
     /// <summary>
@@ -237,6 +237,8 @@ namespace Global
     {
         Prisoner,           //禁锢
         Invulnerable,    //无敌
-        Stun,                 //眩晕
+        Stiff,                 //硬直
+        Ignite,             //点燃
+        Slow,               //减速
     }
 }
