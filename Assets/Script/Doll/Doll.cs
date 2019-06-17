@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Global;
+using Photon.Pun;
 using UnityEngine;
 
+[RequireComponent(typeof(PhotonView))]
+[RequireComponent(typeof(PhotonTransformView))]
 [RequireComponent(typeof(Rigidbody))]
-public abstract class Doll : MonoBehaviour
+public abstract class Doll : MonoBehaviourPun,IPunObservable
 {
     //----------------[Public Area]--------------------
     //人偶受到伤害
@@ -47,6 +50,43 @@ public abstract class Doll : MonoBehaviour
         int index = _buff.FindIndex(n => n.Sort == buff);
         if (index >= 0)
             _buff.RemoveAt(index);
+    }
+
+    public bool EnterCheck(Controller player)
+    {
+        if (!Owner)
+        {
+            _owner = player;
+            player.PlayerAction = Action;
+            photonView.TransferOwnership(player.photonView.Owner);
+            return true;
+        }
+        return false;
+    }
+
+    //private float _mHp;
+    //private float _mAtk;
+    //private float _mSpd;
+    //private float _hp;
+    //private float _atk;
+    //private float _spd;
+    //private float _defense;
+    //private int _damagedNumber;
+    //private float _mCd;
+    //private float _cd;
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(Owner);
+            stream.SendNext(_damagedNumber);
+        }
+        else
+        {
+            this._owner = (Controller)stream.ReceiveNext();
+            this._damagedNumber = (int)stream.ReceiveNext();
+        }
     }
 
     //拾取物件，子类必须实现
@@ -96,11 +136,11 @@ public abstract class Doll : MonoBehaviour
             _rigi = GetComponent<Rigidbody>();
         _dollAreaPrefab = Resources.Load<GameObject>("Prefab/Doll/DollArea");
         _dollArea = Instantiate(_dollAreaPrefab, transform);
-        _state = SoulState.Leave;
         _damagedNumber = 0;
         _defense = 0;
         _owner = null;
         _buff = new List<Buff>();
+        //photonView.RPC("ReInit", RpcTarget.All);
         ReInit();
     }
 
@@ -148,7 +188,6 @@ public abstract class Doll : MonoBehaviour
     private float _spd;
     private float _defense;
     private int _damagedNumber;
-    private SoulState _state;
     private float _mCd;
     private float _cd;
     private GameObject _dollAreaPrefab;
@@ -166,17 +205,9 @@ public abstract class Doll : MonoBehaviour
     /// </summary>
     /// <param name="player">玩家</param>
     /// <returns></returns>
-    private SoulState Action(Controller player)
+    private Vector3 Action()
     {
-        if (!Owner)
-        {
-            //if (!player.SoulAnimate(transform.position))
-            //    return SoulState.Wait;
-            transform.tag = "Doll";
-            ChangeOwner(player);
-            return _state;
-        }
-        if (!Damaged && _state == SoulState.Stay)
+        if (!Damaged)
         {
             BuffCountDown();
             Loop();
@@ -184,7 +215,11 @@ public abstract class Doll : MonoBehaviour
             Jump();
             LeaveDoll();
         }
-        return _state;
+        else
+        {
+            LeaveDollOwnerFunction();
+        }
+        return transform.position;
     }
 
     /// <summary>
@@ -196,13 +231,11 @@ public abstract class Doll : MonoBehaviour
         if (owner)
         {   
             _owner = owner;
-            _state = SoulState.Enter;
             Owner.transform.SetParent(transform);
             StartCoroutine(WaitForAnimate());
         }
         else
         {
-            _state = SoulState.Leave;
             Owner.transform.SetParent(null);
             _owner = owner;
         }
@@ -211,7 +244,6 @@ public abstract class Doll : MonoBehaviour
     private IEnumerator WaitForAnimate()
     {
         yield return new WaitForSeconds(1f);
-        _state = SoulState.Stay;
         _owner.transform.localPosition = Vector3.zero;
     }
 
@@ -231,8 +263,11 @@ public abstract class Doll : MonoBehaviour
         transform.tag = "Untagged";
         Owner.PlayerAction -= Action;
         Owner.hasDoll = false;
-        ChangeOwner(null);
-        ReInit();
+        //ChangeOwner(null);
+        photonView.RPC("ReInit", RpcTarget.All);
+        photonView.TransferOwnership(0);
+        Owner.LeaveDoll();
+        _owner = null;
         _cd = _mCd;
     }
 
@@ -256,6 +291,7 @@ public abstract class Doll : MonoBehaviour
     /// <summary>
     /// 重置人偶状态
     /// </summary>
+    [PunRPC]
     private void ReInit()
     {
         if (_damagedNumber == 0)
@@ -299,29 +335,30 @@ public abstract class Doll : MonoBehaviour
             _dollArea.SetActive(true);
             return;
         }
-        GuiAction?.Invoke(new DollComm(DollCDType.HPBar, _hp / _mHp));
+        if(!photonView.IsMine)
+            GuiAction?.Invoke(new DollComm(DollCDType.HPBar, _hp / _mHp));
         _dollArea.SetActive(false);
     }
 
-    /// <summary>
-    /// 判断玩家进入附身范围
-    /// </summary>
-    /// <param name="other">进入范围对象</param>
-    private void OnTriggerStay(Collider other)
-    {
-        if (!Owner && other.tag == "Player")
-        {
-            Controller temp = other.GetComponent<Controller>();
-            if (temp.hasDoll || _cd > 0f)
-                return;
-            if (Input.GetKeyDown(Key.Enter))
-            {
-                temp.AnimateTarget = transform.position;
-                temp.PlayerAction = Action;
-                temp.hasDoll = true;
-            }
-        }
-    }
+    ///// <summary>
+    ///// 判断玩家进入附身范围
+    ///// </summary>
+    ///// <param name="other">进入范围对象</param>
+    //private void OnTriggerStay(Collider other)
+    //{
+    //    if (!Owner && other.tag == "Player")
+    //    {
+    //        Controller temp = other.GetComponent<Controller>();
+    //        if (temp.hasDoll || _cd > 0f)
+    //            return;
+    //        if (Input.GetKeyDown(Key.Enter))
+    //        {
+    //            temp.AnimateTarget = transform.position;
+    //            temp.PlayerAction = Action;
+    //            temp.hasDoll = true;
+    //        }
+    //    }
+    //}
 
     /// <summary>
     /// Buff倒计时

@@ -208,7 +208,7 @@ namespace Global
         private float _data;
     }
 
-    public delegate SoulState ActionDelegate(Controller player);
+    public delegate Vector3 ActionDelegate();
     public delegate void GUIDelegate(DollComm dc);
 
     /// <summary>

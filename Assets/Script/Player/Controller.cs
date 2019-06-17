@@ -7,14 +7,29 @@ using UnityEngine;
 [RequireComponent(typeof(PhotonView))]
 [RequireComponent(typeof(PhotonTransformView))]
 [RequireComponent(typeof(Rigidbody))]
-public abstract class Controller : MonoBehaviourPunCallbacks
+public abstract class Controller : MonoBehaviourPun,IPunObservable
 {
     //----------------[Public Area]--------------------
     public string playerName;
     [HideInInspector]
     public bool hasDoll = false;
-    public Vector3 AnimateTarget { set { _animateTarget = value; } }
 
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(_isVisible);
+        }
+        else
+        {
+            this._isVisible = (bool)stream.ReceiveNext();
+        }
+    }
+
+    public void LeaveDoll()
+    {
+        _isVisible = true;
+    }
 
     //----------------[Protected Area]-----------------
 
@@ -63,6 +78,13 @@ public abstract class Controller : MonoBehaviourPunCallbacks
     private PhotonView _pv;
     private Vector3 _animateTarget;
     private bool _animateEnd = false;
+    private bool _isVisible { set {
+            _rigi.isKinematic = !value;
+            _coll.enabled = value;
+            _render.enabled = value;
+        } get { return _render.enabled; } }
+    private bool _entering = false;
+    private Coroutine _enterCor = null;
 
     private void Update()
     {
@@ -70,57 +92,42 @@ public abstract class Controller : MonoBehaviourPunCallbacks
             return;
         if (PlayerAction != null)
         {
-            SoulState temp;
-            switch (temp = PlayerAction(this))
-            {
-                case SoulState.Enter:
-                    SoulAnimate();
-                    break;
-                case SoulState.Stay:
-                    break;
-                case SoulState.Leave:
-                    LeaveDoll();
-                    break;
-            }
+            transform.position = PlayerAction();
         }
         else
         {
-            Move();
-            Jump();
-            Loop();
+            Enter();
+            if (!_rigi.isKinematic)
+            {
+                Move();
+                Jump();
+                Loop();
+            }
         }
     }
 
-    /// <summary>
-    /// 灵魂进入人偶运动动画
-    /// </summary>
-    /// <returns>true 动画结束 灵魂状态改变； false 动画进行中</returns>
-    private bool SoulAnimate()
+    private void Enter()
     {
-        if (_animateEnd)
-            return true;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if(Input.GetMouseButtonDown(1))
+            if(Physics.Raycast(ray,out RaycastHit hit,10f,LayerMask.GetMask(new string[] { "Doll" })))
+            {
+                if(_enterCor == null)
+                    _enterCor = StartCoroutine(Entering(hit.transform));
+            }
+    }
 
+    private IEnumerator Entering(Transform obj)
+    {
         _rigi.isKinematic = true;
-        if (Vector3.Distance(transform.position, _animateTarget) > 0.01f)
+        while (Vector3.Distance(obj.position, transform.position) > 0.1f)
         {
-            transform.position = Vector3.Lerp(transform.position, _animateTarget, 0.1f);
-            return false;
+            yield return new WaitForSeconds(Time.deltaTime);
+            transform.position = Vector3.Lerp(transform.position, obj.position, 0.1f);
         }
-        _animateEnd = true;
-        _coll.enabled = false;
-        _render.enabled = false;
-        return true;
-    }
-
-    /// <summary>
-    /// 离开人偶的灵魂状态改变
-    /// </summary>
-    private void LeaveDoll()
-    {
-        _rigi.isKinematic = false;
-        _coll.enabled = true;
-        _render.enabled = true;
-        _animateEnd = false;
+        _isVisible = false;
+        obj.GetComponent<Doll>().EnterCheck(this);
+        _enterCor = null;
     }
 
     public ActionDelegate PlayerAction;

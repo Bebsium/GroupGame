@@ -12,7 +12,7 @@ public class GameNetController : MonoBehaviour
     
     private void Start()
     {
-        if(instance != null)
+        if (instance != null)
             Destroy(instance.gameObject);
         instance = this;
 
@@ -20,7 +20,7 @@ public class GameNetController : MonoBehaviour
         {
             UnityEngine.SceneManagement.SceneManager.LoadScene("NetLobby");
         }
-
         player = PhotonNetwork.Instantiate(Path.Combine("Prefab", "Player", "Player"), Vector3.zero + Vector3.up * 4, Quaternion.identity);
+        CameraFollow.instance.CameraFollowObj = player;
     }
 }
