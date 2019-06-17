@@ -112,7 +112,7 @@ public abstract class Controller : MonoBehaviourPun,IPunObservable
         if(Input.GetMouseButtonDown(1))
             if(Physics.Raycast(ray,out RaycastHit hit,10f,LayerMask.GetMask(new string[] { "Doll" })))
             {
-                if(_enterCor == null)
+                if(_enterCor == null && hit.transform.GetComponent<Doll>().CanEnter)
                     _enterCor = StartCoroutine(Entering(hit.transform));
             }
     }

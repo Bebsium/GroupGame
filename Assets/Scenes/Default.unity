@@ -387,7 +387,6 @@ MonoBehaviour:
   OwnershipTransfer: 1
   ObservedComponents:
   - {fileID: 165075492}
-  - {fileID: 165075491}
   viewIdField: 2
   InstantiationId: 2
   isRuntimeInstantiated: 0
@@ -561,7 +560,6 @@ MonoBehaviour:
   OwnershipTransfer: 1
   ObservedComponents:
   - {fileID: 217959457}
-  - {fileID: 217959455}
   viewIdField: 3
   InstantiationId: 3
   isRuntimeInstantiated: 0
@@ -2277,7 +2275,6 @@ MonoBehaviour:
   OwnershipTransfer: 1
   ObservedComponents:
   - {fileID: 1862804467}
-  - {fileID: 1862804465}
   viewIdField: 1
   InstantiationId: 1
   isRuntimeInstantiated: 0
@@ -2486,7 +2483,6 @@ MonoBehaviour:
   OwnershipTransfer: 1
   ObservedComponents:
   - {fileID: 2147432918}
-  - {fileID: 2147432915}
   viewIdField: 4
   InstantiationId: 4
   isRuntimeInstantiated: 0

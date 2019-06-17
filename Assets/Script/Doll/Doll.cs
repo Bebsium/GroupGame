@@ -7,7 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(PhotonView))]
 [RequireComponent(typeof(PhotonTransformView))]
 [RequireComponent(typeof(Rigidbody))]
-public abstract class Doll : MonoBehaviourPun,IPunObservable
+public abstract class Doll : MonoBehaviourPun
 {
     //----------------[Public Area]--------------------
     //人偶受到伤害
@@ -52,8 +52,12 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable
             _buff.RemoveAt(index);
     }
 
+    public bool CanEnter { get { if (_cd > 0f) return false; else return true; } }
+
     public bool EnterCheck(Controller player)
     {
+        if (_cd > 0f)
+            return false;
         if (!Owner)
         {
             _owner = player;
@@ -75,19 +79,25 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable
     //private float _mCd;
     //private float _cd;
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            stream.SendNext(Owner);
-            stream.SendNext(_damagedNumber);
-        }
-        else
-        {
-            this._owner = (Controller)stream.ReceiveNext();
-            this._damagedNumber = (int)stream.ReceiveNext();
-        }
-    }
+    //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    //{
+    //    if (Owner == null)
+    //        return;
+    //    if (stream.IsWriting)
+    //    {
+    //        stream.SendNext(Owner);
+    //        stream.SendNext(_damagedNumber);
+    //        //stream.SendNext(transform.position);
+    //        //stream.SendNext(transform.rotation);
+    //    }
+    //    else
+    //    {
+    //        this._owner = (Controller)stream.ReceiveNext();
+    //        this._damagedNumber = (int)stream.ReceiveNext();
+    //        //this.transform.position = (Vector3)stream.ReceiveNext();
+    //        //this.transform.rotation = (Quaternion)stream.ReceiveNext();
+    //    }
+    //}
 
     //拾取物件，子类必须实现
     public abstract bool PickItem(string name);
@@ -207,6 +217,8 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable
     /// <returns></returns>
     private Vector3 Action()
     {
+        if (!Owner.photonView.IsMine)
+            return transform.position;
         if (!Damaged)
         {
             BuffCountDown();
@@ -264,7 +276,8 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable
         Owner.PlayerAction -= Action;
         Owner.hasDoll = false;
         //ChangeOwner(null);
-        photonView.RPC("ReInit", RpcTarget.All);
+        //photonView.RPC("ReInit", RpcTarget.All);
+        ReInit();
         photonView.TransferOwnership(0);
         Owner.LeaveDoll();
         _owner = null;
@@ -291,7 +304,7 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable
     /// <summary>
     /// 重置人偶状态
     /// </summary>
-    [PunRPC]
+    //[PunRPC]
     private void ReInit()
     {
         if (_damagedNumber == 0)
@@ -335,7 +348,7 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable
             _dollArea.SetActive(true);
             return;
         }
-        if(!photonView.IsMine)
+        if(!Owner.photonView.IsMine)
             GuiAction?.Invoke(new DollComm(DollCDType.HPBar, _hp / _mHp));
         _dollArea.SetActive(false);
     }
