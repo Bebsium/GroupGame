@@ -58,11 +58,13 @@ public abstract class Doll : MonoBehaviourPun
     {
         if (_cd > 0f)
             return false;
-        if (!Owner)
+        if (Owner == "")
         {
-            _owner = player;
+            _controller = player;
+            _owner = player.photonView.Owner.UserId;
             player.PlayerAction = Action;
             photonView.TransferOwnership(player.photonView.Owner);
+            photonView.RPC("UpdateData", RpcTarget.Others, _owner);
             return true;
         }
         return false;
@@ -104,7 +106,7 @@ public abstract class Doll : MonoBehaviourPun
 
     //----------------[Protected Area]-----------------
     protected int DamagedNumber { get { return _damagedNumber; } }
-    protected Controller Owner { get { return _owner; } }
+    protected string Owner { get { return _owner; } }
     protected Rigidbody Rigi { get { return _rigi; } }
     protected float ATK { get { return _atk; } }
     protected float HP { get { return _hp; } }
@@ -188,7 +190,9 @@ public abstract class Doll : MonoBehaviourPun
     }
 
     #region Private
-    private Controller _owner;
+    [SerializeField]
+    private string _owner;
+    private Controller _controller;
     private Rigidbody _rigi;
     private float _mHp;
     private float _mAtk;
@@ -217,7 +221,8 @@ public abstract class Doll : MonoBehaviourPun
     /// <returns></returns>
     private Vector3 Action()
     {
-        if (!Owner.photonView.IsMine)
+        if(Owner == PhotonNetwork.LocalPlayer.UserId)
+        //if (!Owner.photonView.IsMine)
             return transform.position;
         if (!Damaged)
         {
@@ -238,26 +243,26 @@ public abstract class Doll : MonoBehaviourPun
     /// 改变人偶拥有者
     /// </summary>
     /// <param name="owner">新拥有者</param>
-    private void ChangeOwner(Controller owner)
-    {
-        if (owner)
-        {   
-            _owner = owner;
-            Owner.transform.SetParent(transform);
-            StartCoroutine(WaitForAnimate());
-        }
-        else
-        {
-            Owner.transform.SetParent(null);
-            _owner = owner;
-        }
-    }
+    //private void ChangeOwner(string owner)
+    //{
+    //    if (owner != "")
+    //    {   
+    //        _owner = owner;
+    //        Owner.transform.SetParent(transform);
+    //        StartCoroutine(WaitForAnimate());
+    //    }
+    //    else
+    //    {
+    //        Owner.transform.SetParent(null);
+    //        _owner = owner;
+    //    }
+    //}
 
-    private IEnumerator WaitForAnimate()
-    {
-        yield return new WaitForSeconds(1f);
-        _owner.transform.localPosition = Vector3.zero;
-    }
+    //private IEnumerator WaitForAnimate()
+    //{
+    //    yield return new WaitForSeconds(1f);
+    //    _owner.transform.localPosition = Vector3.zero;
+    //}
 
     /// <summary>
     /// 离开人偶
@@ -273,13 +278,14 @@ public abstract class Doll : MonoBehaviourPun
     private void LeaveDollOwnerFunction()
     {
         transform.tag = "Untagged";
-        Owner.PlayerAction -= Action;
-        Owner.hasDoll = false;
+        _controller.PlayerAction -= Action;
+        _controller.hasDoll = false;
         //ChangeOwner(null);
         //photonView.RPC("ReInit", RpcTarget.All);
         ReInit();
         photonView.TransferOwnership(0);
-        Owner.LeaveDoll();
+        photonView.RPC("UpdateData", RpcTarget.Others, null);
+        _controller.LeaveDoll();
         _owner = null;
         _cd = _mCd;
     }
@@ -336,7 +342,7 @@ public abstract class Doll : MonoBehaviourPun
             _dollArea.SetActive(false);
             return;
         }
-        if (!Owner)
+        if (Owner == "")
         {
             if (_cd > 0f)
             {
@@ -348,7 +354,7 @@ public abstract class Doll : MonoBehaviourPun
             _dollArea.SetActive(true);
             return;
         }
-        if(!Owner.photonView.IsMine)
+        if (Owner != PhotonNetwork.LocalPlayer.UserId) 
             GuiAction?.Invoke(new DollComm(DollCDType.HPBar, _hp / _mHp));
         _dollArea.SetActive(false);
     }
@@ -407,6 +413,12 @@ public abstract class Doll : MonoBehaviourPun
         _spd = _tempSpd;
         _defense = _tempDefense;
         _attrPromoted = false;
+    }
+
+    [PunRPC]
+    private void UpdateData(string con)
+    {
+        _owner = con;
     }
 
     //人偶界面代理
