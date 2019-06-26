@@ -44,7 +44,7 @@ RenderSettings:
 LightmapSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 11
-  m_GIWorkflowMode: 0
+  m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -88,7 +88,8 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaIndirect: 2
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ShowResolutionOverlay: 1
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 7667a17bd6ef30c45b43422bfb63a20f,
+    type: 2}
   m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
@@ -353,6 +354,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce608efa384549a40add411ffdbc379b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _owner: 
+  _cd: 0
 --- !u!114 &165075492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -512,6 +515,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce608efa384549a40add411ffdbc379b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _owner: 
+  _cd: 0
 --- !u!4 &217959456
 Transform:
   m_ObjectHideFlags: 0
@@ -560,6 +565,7 @@ MonoBehaviour:
   OwnershipTransfer: 1
   ObservedComponents:
   - {fileID: 217959457}
+  - {fileID: 217959455}
   viewIdField: 3
   InstantiationId: 3
   isRuntimeInstantiated: 0
@@ -2227,6 +2233,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce608efa384549a40add411ffdbc379b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _owner: 
+  _cd: 0
 --- !u!4 &1862804466
 Transform:
   m_ObjectHideFlags: 0
@@ -2423,6 +2431,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce608efa384549a40add411ffdbc379b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _owner: 
+  _cd: 0
 --- !u!4 &2147432916
 Transform:
   m_ObjectHideFlags: 0

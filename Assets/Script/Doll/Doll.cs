@@ -7,7 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(PhotonView))]
 [RequireComponent(typeof(PhotonTransformView))]
 [RequireComponent(typeof(Rigidbody))]
-public abstract class Doll : MonoBehaviourPun
+public abstract class Doll : MonoBehaviourPun,IPunObservable
 {
     //----------------[Public Area]--------------------
     //人偶受到伤害
@@ -58,9 +58,10 @@ public abstract class Doll : MonoBehaviourPun
     {
         if (_cd > 0f)
             return false;
-        if (!Owner)
+        if (Owner == "" || Owner == null)
         {
-            _owner = player;
+            _controller = player;
+            photonView.RPC("EnterRPC", RpcTarget.All, player.photonView.Owner.UserId);
             player.PlayerAction = Action;
             photonView.TransferOwnership(player.photonView.Owner);
             return true;
@@ -79,32 +80,32 @@ public abstract class Doll : MonoBehaviourPun
     //private float _mCd;
     //private float _cd;
 
-    //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    //{
-    //    if (Owner == null)
-    //        return;
-    //    if (stream.IsWriting)
-    //    {
-    //        stream.SendNext(Owner);
-    //        stream.SendNext(_damagedNumber);
-    //        //stream.SendNext(transform.position);
-    //        //stream.SendNext(transform.rotation);
-    //    }
-    //    else
-    //    {
-    //        this._owner = (Controller)stream.ReceiveNext();
-    //        this._damagedNumber = (int)stream.ReceiveNext();
-    //        //this.transform.position = (Vector3)stream.ReceiveNext();
-    //        //this.transform.rotation = (Quaternion)stream.ReceiveNext();
-    //    }
-    //}
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (Owner == null || Owner == "")
+            return;
+        if (stream.IsWriting)
+        {
+            stream.SendNext(_hp);
+            stream.SendNext(_atk);
+            stream.SendNext(_spd);
+            stream.SendNext(_defense);
+        }
+        else if (stream.IsReading)
+        {
+            this._hp = (float)stream.ReceiveNext();
+            this._atk = (float)stream.ReceiveNext();
+            this._spd = (float)stream.ReceiveNext();
+            this._defense = (float)stream.ReceiveNext();
+        }
+    }
 
     //拾取物件，子类必须实现
     public abstract bool PickItem(string name);
 
     //----------------[Protected Area]-----------------
     protected int DamagedNumber { get { return _damagedNumber; } }
-    protected Controller Owner { get { return _owner; } }
+    protected string Owner { get { return _owner; } }
     protected Rigidbody Rigi { get { return _rigi; } }
     protected float ATK { get { return _atk; } }
     protected float HP { get { return _hp; } }
@@ -188,17 +189,21 @@ public abstract class Doll : MonoBehaviourPun
     }
 
     #region Private
-    private Controller _owner;
+    [SerializeField]
+    private string _owner;
+    private Controller _controller;
     private Rigidbody _rigi;
     private float _mHp;
     private float _mAtk;
     private float _mSpd;
+    [SerializeField]
     private float _hp;
     private float _atk;
     private float _spd;
     private float _defense;
     private int _damagedNumber;
     private float _mCd;
+    [SerializeField]
     private float _cd;
     private GameObject _dollAreaPrefab;
     private GameObject _dollArea;
@@ -217,7 +222,8 @@ public abstract class Doll : MonoBehaviourPun
     /// <returns></returns>
     private Vector3 Action()
     {
-        if (!Owner.photonView.IsMine)
+        if(Owner != PhotonNetwork.LocalPlayer.UserId)
+        //if (!Owner.photonView.IsMine)
             return transform.position;
         if (!Damaged)
         {
@@ -238,26 +244,26 @@ public abstract class Doll : MonoBehaviourPun
     /// 改变人偶拥有者
     /// </summary>
     /// <param name="owner">新拥有者</param>
-    private void ChangeOwner(Controller owner)
-    {
-        if (owner)
-        {   
-            _owner = owner;
-            Owner.transform.SetParent(transform);
-            StartCoroutine(WaitForAnimate());
-        }
-        else
-        {
-            Owner.transform.SetParent(null);
-            _owner = owner;
-        }
-    }
+    //private void ChangeOwner(string owner)
+    //{
+    //    if (owner != "")
+    //    {   
+    //        _owner = owner;
+    //        Owner.transform.SetParent(transform);
+    //        StartCoroutine(WaitForAnimate());
+    //    }
+    //    else
+    //    {
+    //        Owner.transform.SetParent(null);
+    //        _owner = owner;
+    //    }
+    //}
 
-    private IEnumerator WaitForAnimate()
-    {
-        yield return new WaitForSeconds(1f);
-        _owner.transform.localPosition = Vector3.zero;
-    }
+    //private IEnumerator WaitForAnimate()
+    //{
+    //    yield return new WaitForSeconds(1f);
+    //    _owner.transform.localPosition = Vector3.zero;
+    //}
 
     /// <summary>
     /// 离开人偶
@@ -273,15 +279,14 @@ public abstract class Doll : MonoBehaviourPun
     private void LeaveDollOwnerFunction()
     {
         transform.tag = "Untagged";
-        Owner.PlayerAction -= Action;
-        Owner.hasDoll = false;
+        _controller.PlayerAction -= Action;
+        _controller.hasDoll = false;
         //ChangeOwner(null);
         //photonView.RPC("ReInit", RpcTarget.All);
-        ReInit();
+        //ReInit();
         photonView.TransferOwnership(0);
-        Owner.LeaveDoll();
-        _owner = null;
-        _cd = _mCd;
+        _controller.LeaveDoll();
+        photonView.RPC("LeaveRPC", RpcTarget.All, _damagedNumber);
     }
 
     /// <summary>
@@ -336,7 +341,7 @@ public abstract class Doll : MonoBehaviourPun
             _dollArea.SetActive(false);
             return;
         }
-        if (!Owner)
+        if (Owner == "" || Owner == null)
         {
             if (_cd > 0f)
             {
@@ -348,8 +353,10 @@ public abstract class Doll : MonoBehaviourPun
             _dollArea.SetActive(true);
             return;
         }
-        if(!Owner.photonView.IsMine)
+        else if (Owner != PhotonNetwork.LocalPlayer.UserId)
+        {
             GuiAction?.Invoke(new DollComm(DollCDType.HPBar, _hp / _mHp));
+        }
         _dollArea.SetActive(false);
     }
 
@@ -407,6 +414,22 @@ public abstract class Doll : MonoBehaviourPun
         _spd = _tempSpd;
         _defense = _tempDefense;
         _attrPromoted = false;
+    }
+
+    [PunRPC]
+    public void EnterRPC(string con)
+    {
+        _owner = con;
+        //ReInit();
+    }
+
+    [PunRPC]
+    public void LeaveRPC(int n)
+    {
+        _owner = null;
+        _damagedNumber = n;
+        ReInit();
+        _cd = _mCd;
     }
 
     //人偶界面代理

@@ -12,7 +12,7 @@ public class Doll_hat : Doll
 
     public override bool PickItem(string name)
     {
-        print(Owner.playerName + " picked " + name);
+        print(Owner + " picked " + name);
         return true;
     }
 
