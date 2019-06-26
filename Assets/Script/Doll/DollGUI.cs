@@ -7,17 +7,27 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Doll))]
 public class DollGUI : MonoBehaviour
 {
+    public void NickName(string name)
+    {
+        print("Name: "+name);
+        nickName.gameObject.SetActive(name != "");
+        nickName.text = name;
+    }
+
     private GameObject guiPrefab;
     private Image cdProgress;
     private Slider hpBar;
+    private Text nickName;
 
     private void Start()
     {
         GetComponent<Doll>().GuiAction = Action;
         guiPrefab = Resources.Load<GameObject>("Prefab/Doll/DollGUI");
         GameObject canvas = Instantiate(guiPrefab, transform);
+        canvas.name = "DollGUI";
         cdProgress = canvas.FindObject("Progress").GetComponent<Image>();
         hpBar = canvas.FindObject("HPBar").GetComponent<Slider>();
+        nickName = canvas.FindObject("NickName").GetComponent<Text>();
     }
 
     private void Action(Global.DollComm dc)

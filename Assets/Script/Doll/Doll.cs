@@ -69,17 +69,6 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable
         return false;
     }
 
-    //private float _mHp;
-    //private float _mAtk;
-    //private float _mSpd;
-    //private float _hp;
-    //private float _atk;
-    //private float _spd;
-    //private float _defense;
-    //private int _damagedNumber;
-    //private float _mCd;
-    //private float _cd;
-
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (Owner == null || Owner == "")
@@ -223,8 +212,10 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable
     private Vector3 Action()
     {
         if(Owner != PhotonNetwork.LocalPlayer.UserId)
-        //if (!Owner.photonView.IsMine)
+        {
             return transform.position;
+        }
+            
         if (!Damaged)
         {
             BuffCountDown();
@@ -239,31 +230,6 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable
         }
         return transform.position;
     }
-
-    /// <summary>
-    /// 改变人偶拥有者
-    /// </summary>
-    /// <param name="owner">新拥有者</param>
-    //private void ChangeOwner(string owner)
-    //{
-    //    if (owner != "")
-    //    {   
-    //        _owner = owner;
-    //        Owner.transform.SetParent(transform);
-    //        StartCoroutine(WaitForAnimate());
-    //    }
-    //    else
-    //    {
-    //        Owner.transform.SetParent(null);
-    //        _owner = owner;
-    //    }
-    //}
-
-    //private IEnumerator WaitForAnimate()
-    //{
-    //    yield return new WaitForSeconds(1f);
-    //    _owner.transform.localPosition = Vector3.zero;
-    //}
 
     /// <summary>
     /// 离开人偶
@@ -281,9 +247,6 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable
         transform.tag = "Untagged";
         _controller.PlayerAction -= Action;
         _controller.hasDoll = false;
-        //ChangeOwner(null);
-        //photonView.RPC("ReInit", RpcTarget.All);
-        //ReInit();
         photonView.TransferOwnership(0);
         _controller.LeaveDoll();
         photonView.RPC("LeaveRPC", RpcTarget.All, _damagedNumber);
@@ -356,29 +319,11 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable
         else if (Owner != PhotonNetwork.LocalPlayer.UserId)
         {
             GuiAction?.Invoke(new DollComm(DollCDType.HPBar, _hp / _mHp));
+            print(PhotonNetwork.LocalPlayer.NickName);
+            transform.SendMessage("NickName", PhotonNetwork.LocalPlayer.NickName);
         }
         _dollArea.SetActive(false);
     }
-
-    ///// <summary>
-    ///// 判断玩家进入附身范围
-    ///// </summary>
-    ///// <param name="other">进入范围对象</param>
-    //private void OnTriggerStay(Collider other)
-    //{
-    //    if (!Owner && other.tag == "Player")
-    //    {
-    //        Controller temp = other.GetComponent<Controller>();
-    //        if (temp.hasDoll || _cd > 0f)
-    //            return;
-    //        if (Input.GetKeyDown(Key.Enter))
-    //        {
-    //            temp.AnimateTarget = transform.position;
-    //            temp.PlayerAction = Action;
-    //            temp.hasDoll = true;
-    //        }
-    //    }
-    //}
 
     /// <summary>
     /// Buff倒计时
@@ -420,7 +365,6 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable
     public void EnterRPC(string con)
     {
         _owner = con;
-        //ReInit();
     }
 
     [PunRPC]

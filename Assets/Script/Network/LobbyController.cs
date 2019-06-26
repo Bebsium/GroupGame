@@ -47,6 +47,7 @@ public class LobbyController : MonoBehaviourPunCallbacks
     private void JoinLobby()
     {
         //PhotonNetwork.JoinLobby();
+        PhotonNetwork.NickName = nickNameInput.GetComponent<UnityEngine.UI.InputField>().text;
         PhotonNetwork.JoinRandomRoom();
     }
 
