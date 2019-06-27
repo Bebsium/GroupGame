@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using Global;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
 [RequireComponent(typeof(PhotonView))]
 [RequireComponent(typeof(PhotonTransformView))]
 [RequireComponent(typeof(Rigidbody))]
-public abstract class Doll : MonoBehaviourPun,IPunObservable
+public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallbacks
 {
     //----------------[Public Area]--------------------
     //人偶受到伤害
@@ -319,8 +320,7 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable
         else if (Owner != PhotonNetwork.LocalPlayer.UserId)
         {
             GuiAction?.Invoke(new DollComm(DollCDType.HPBar, _hp / _mHp));
-            print(PhotonNetwork.LocalPlayer.NickName);
-            transform.SendMessage("NickName", PhotonNetwork.LocalPlayer.NickName);
+            //transform.SendMessage("NickName", PhotonNetwork.LocalPlayer.NickName);
         }
         _dollArea.SetActive(false);
     }
@@ -374,6 +374,26 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable
         _damagedNumber = n;
         ReInit();
         _cd = _mCd;
+    }
+
+    public void OnOwnershipRequest(PhotonView targetView, Player requestingPlayer)
+    {
+        
+    }
+
+    public void OnOwnershipTransfered(PhotonView targetView, Player previousOwner)
+    {
+        //if (targetView.IsSceneView)
+        //{
+        //    SendMessage("NickName", "");
+        //}
+        //else if (targetView.IsOwnerActive) 
+        //{
+        //    if (!photonView.IsMine)
+        //    {
+        //        SendMessage("NickName", targetView.Owner.NickName);
+        //    }
+        //}
     }
 
     //人偶界面代理

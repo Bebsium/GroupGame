@@ -90,7 +90,7 @@ LightmapSettings:
     m_ShowResolutionOverlay: 1
   m_LightingDataAsset: {fileID: 112000000, guid: 7667a17bd6ef30c45b43422bfb63a20f,
     type: 2}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -235,6 +235,7 @@ GameObject:
   - component: {fileID: 165075489}
   - component: {fileID: 165075493}
   - component: {fileID: 165075492}
+  - component: {fileID: 165075494}
   m_Layer: 0
   m_Name: Doll2
   m_TagString: Untagged
@@ -355,6 +356,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _owner: 
+  _hp: 0
   _cd: 0
 --- !u!114 &165075492
 MonoBehaviour:
@@ -386,13 +388,31 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
-  Synchronization: 3
+  Synchronization: 2
   OwnershipTransfer: 1
   ObservedComponents:
   - {fileID: 165075492}
+  - {fileID: 165075494}
+  - {fileID: 165075491}
   viewIdField: 2
   InstantiationId: 2
   isRuntimeInstantiated: 0
+--- !u!114 &165075494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 165075484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &217959449
 GameObject:
   m_ObjectHideFlags: 0
@@ -410,6 +430,7 @@ GameObject:
   - component: {fileID: 217959450}
   - component: {fileID: 217959458}
   - component: {fileID: 217959457}
+  - component: {fileID: 217959459}
   m_Layer: 0
   m_Name: Doll3
   m_TagString: Untagged
@@ -516,6 +537,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _owner: 
+  _hp: 0
   _cd: 0
 --- !u!4 &217959456
 Transform:
@@ -561,14 +583,31 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
-  Synchronization: 3
+  Synchronization: 2
   OwnershipTransfer: 1
   ObservedComponents:
   - {fileID: 217959457}
+  - {fileID: 217959459}
   - {fileID: 217959455}
   viewIdField: 3
   InstantiationId: 3
   isRuntimeInstantiated: 0
+--- !u!114 &217959459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 217959449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &331701597
 GameObject:
   m_ObjectHideFlags: 0
@@ -2127,6 +2166,7 @@ GameObject:
   - component: {fileID: 1862804460}
   - component: {fileID: 1862804468}
   - component: {fileID: 1862804467}
+  - component: {fileID: 1862804469}
   m_Layer: 0
   m_Name: Doll4
   m_TagString: Untagged
@@ -2234,6 +2274,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _owner: 
+  _hp: 0
   _cd: 0
 --- !u!4 &1862804466
 Transform:
@@ -2279,13 +2320,31 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
-  Synchronization: 3
+  Synchronization: 2
   OwnershipTransfer: 1
   ObservedComponents:
   - {fileID: 1862804467}
+  - {fileID: 1862804469}
+  - {fileID: 1862804465}
   viewIdField: 1
   InstantiationId: 1
   isRuntimeInstantiated: 0
+--- !u!114 &1862804469
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1862804459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &2100938622
 GameObject:
   m_ObjectHideFlags: 0
@@ -2337,6 +2396,7 @@ GameObject:
   - component: {fileID: 2147432911}
   - component: {fileID: 2147432919}
   - component: {fileID: 2147432918}
+  - component: {fileID: 2147432920}
   m_Layer: 0
   m_Name: Doll
   m_TagString: Untagged
@@ -2432,6 +2492,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _owner: 
+  _hp: 0
   _cd: 0
 --- !u!4 &2147432916
 Transform:
@@ -2489,10 +2550,28 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
-  Synchronization: 3
+  Synchronization: 2
   OwnershipTransfer: 1
   ObservedComponents:
   - {fileID: 2147432918}
+  - {fileID: 2147432920}
+  - {fileID: 2147432915}
   viewIdField: 4
   InstantiationId: 4
   isRuntimeInstantiated: 0
+--- !u!114 &2147432920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2147432910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
+  m_TeleportIfDistanceGreaterThan: 3
