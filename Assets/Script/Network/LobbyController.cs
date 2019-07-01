@@ -14,10 +14,13 @@ public class LobbyController : MonoBehaviourPunCallbacks
 
     void CreateRoom()
     {
-        RoomOptions ros = new RoomOptions();
-        ros.IsOpen = true;
-        ros.IsVisible = true;
-        ros.MaxPlayers = 4;
+        RoomOptions ros = new RoomOptions
+        {
+            IsOpen = true,
+            IsVisible = true,
+            MaxPlayers = 4,
+            PublishUserId = true
+        };
         PhotonNetwork.CreateRoom(Random.Range(1, 1000).ToString(), ros);
     }
 

@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 public class RoomItem : MonoBehaviour
 {
-    public void Init(string name, string type, int playerNum, int maxPlayer)
+    public void Init(string name, string type, int playerNum, int maxPlayer, bool isopen)
     {
         _roomName = name;
-        if (playerNum == maxPlayer)
+        if (playerNum == maxPlayer || !isopen)
         {
             _canEnter = false;
             gameObject.GetComponentInChildren<Button>().interactable = false;

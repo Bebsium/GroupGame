@@ -14,6 +14,8 @@ public class RoomController : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
+            PhotonNetwork.CurrentRoom.IsOpen = false;
+            
             PhotonNetwork.LoadLevel(PhotonNetwork.CurrentRoom.CustomProperties["Type"].ToString());
         }
         else

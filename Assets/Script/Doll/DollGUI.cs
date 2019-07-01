@@ -7,11 +7,10 @@ using UnityEngine.UI;
 using Photon.Realtime;
 
 [RequireComponent(typeof(Doll))]
-public class DollGUI : MonoBehaviourPunCallbacks,IPunOwnershipCallbacks
+public class DollGUI : MonoBehaviourPunCallbacks //,IPunOwnershipCallbacks
 {
     public void NickName(string name)
     {
-        print("Name: "+name);
         nickName.gameObject.SetActive(name != "");
         nickName.text = name;
     }
@@ -62,38 +61,25 @@ public class DollGUI : MonoBehaviourPunCallbacks,IPunOwnershipCallbacks
         hpBar.value = data;
     }
 
-    public void OnOwnershipRequest(PhotonView targetView, Player requestingPlayer)
-    {
+    //public void OnOwnershipRequest(PhotonView targetView, Player requestingPlayer)
+    //{
         
-    }
+    //}
 
-    public void OnOwnershipTransfered(PhotonView targetView, Player previousOwner)
-    {
-        //if (targetView.IsSceneView)
-        //{
-        //    nickName.gameObject.SetActive(false);
-        //}
-        //else if (targetView.IsOwnerActive)
-        //{
-        //    if (!photonView.IsMine)
-        //    {
-        //        nickName.gameObject.SetActive(true);
-        //        print("NickName :" + targetView.Owner.NickName);
-        //        nickName.text = targetView.Owner.NickName;
-        //    }
-        //}
-        if (photonView.IsSceneView)
-        {
-            nickName.gameObject.SetActive(false);
-        }
-        else
-        {
-            if (!photonView.IsMine)
-            {
-                nickName.gameObject.SetActive(true);
-                print("NickName :" + targetView.Owner.NickName);
-                nickName.text = targetView.Owner.NickName;
-            }
-        }
-    }
+    //public void OnOwnershipTransfered(PhotonView targetView, Player previousOwner)
+    //{
+    //    if (photonView.IsSceneView)
+    //    {
+    //        nickName.gameObject.SetActive(false);
+    //    }
+    //    else if (photonView.IsOwnerActive)
+    //    {
+    //        if (!photonView.IsMine)
+    //        {
+    //            nickName.gameObject.SetActive(true);
+    //            print("NickName :" + targetView.Owner.NickName);
+    //            nickName.text = targetView.Owner.NickName;
+    //        }
+    //    }
+    //}
 }

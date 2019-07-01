@@ -320,7 +320,7 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
         else if (Owner != PhotonNetwork.LocalPlayer.UserId)
         {
             GuiAction?.Invoke(new DollComm(DollCDType.HPBar, _hp / _mHp));
-            //transform.SendMessage("NickName", PhotonNetwork.LocalPlayer.NickName);
+            transform.SendMessage("NickName", photonView.Owner.NickName);
         }
         _dollArea.SetActive(false);
     }

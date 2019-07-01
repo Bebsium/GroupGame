@@ -120,11 +120,11 @@ public class SignInManager : MonoBehaviourPunCallbacks
             }
             if(room.PlayerCount > 0)
             {
-                if(room.IsOpen && room.IsVisible)
+                if (room.IsVisible)
                 {
                     _roomList.Add(room);
                     GameObject temp = Instantiate(_roomItemPrefab, _roomListScroll);
-                    temp.GetComponent<RoomItem>().Init(room.Name, room.CustomProperties["Type"].ToString(), room.PlayerCount, room.MaxPlayers);
+                    temp.GetComponent<RoomItem>().Init(room.Name, room.CustomProperties["Type"].ToString(), room.PlayerCount, room.MaxPlayers, room.IsOpen);
                     //temp.GetComponent<RoomItem>().Init(room.Name, "Game Type", room.PlayerCount, room.MaxPlayers);
                 }
             }
