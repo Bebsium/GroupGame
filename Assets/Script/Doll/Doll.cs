@@ -307,6 +307,7 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
         }
         if (Owner == "" || Owner == null)
         {
+            transform.SendMessage("NickName", "");
             if (_cd > 0f)
             {
                 _cd -= Time.deltaTime;
