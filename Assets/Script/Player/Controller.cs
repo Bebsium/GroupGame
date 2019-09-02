@@ -45,6 +45,7 @@ public abstract class Controller : MonoBehaviourPun,IPunObservable
         _coll = GetComponent<Collider>();
         _render = GetComponent<Renderer>();
         _pv = GetComponent<PhotonView>();
+        _particleRenderer = transform.Find("Renderer").gameObject;
         hasDoll = false;
     }
 
@@ -82,9 +83,11 @@ public abstract class Controller : MonoBehaviourPun,IPunObservable
             _rigi.isKinematic = !value;
             _coll.enabled = value;
             _render.enabled = value;
+            _particleRenderer.SetActive(value);
         } get { return _render.enabled; } }
     private bool _entering = false;
     private Coroutine _enterCor = null;
+    private GameObject _particleRenderer;
 
     private void Update()
     {
