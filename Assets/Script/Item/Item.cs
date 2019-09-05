@@ -147,6 +147,7 @@ public class Item : MonoBehaviour
             //get item
             if (Input.GetMouseButtonDown(0))
             {
+                
                 if (other.GetComponent<Doll>().PickItem(itemName))
                     Destroy(gameObject);
             }

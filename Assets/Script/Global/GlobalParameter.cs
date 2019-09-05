@@ -239,4 +239,20 @@ namespace Global
         Invulnerable,    //无敌
         Stun,                 //眩晕
     }
+
+    //攻擊類型
+    public enum AttackState
+    {
+        StickAttack,
+        HeavyAttack,
+        CampstoolAttack,
+    }
+
+    //投擲類型
+    public enum ThrowState
+    {
+        lightThrow,
+        heavyThrow,
+        stickThrow,
+    }
 }
