@@ -1,14 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Global;
 
 public class Doll_Queen : Doll
 {
 
 
-    public override bool PickItem(string name)
+    public override bool PickItem(string name,string type)
     {
         //print(Owner.playerName + " picked " + name);
+        item = Resources.Load<GameObject>("Prefab/Item/" + name);
+        //Item種類を付ける
+        ItemType(type);
         return true;
     }
 
@@ -16,32 +20,20 @@ public class Doll_Queen : Doll
     {
         base.Start();
         Rigi.freezeRotation = true;
-
-        cam=Camera.main;
-        shootRange=Instantiate(cursor,transform);
-
-        lineRenderer = gameObject.AddComponent<LineRenderer>();
-        lineRenderer.positionCount = 0;
-        lineRenderer.material=line;
     }
 
     protected override void Loop()
     {
 
         //相当于Update
-        if (Input.GetKey(KeyCode.Alpha1))
+        if (itemSetting)
         {
-            Hurt = 1f;
+            ItemUse(attackState, throwState);
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            GameObject temp = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            temp.transform.position = transform.position;
-            temp.name = "Putted Item";
-            temp.AddComponent<Item>().picked = true;
-        }
-
+        //attack && ItemAttack
+        Attack();
+ 
         Skill();
 
     }
@@ -57,25 +49,19 @@ public class Doll_Queen : Doll
         //重写跳跃
         base.Jump();
     }
+    protected override void Attack()
+    {
+        base.Attack();
+        if (Input.GetKey(KeyCode.Alpha1))
+        {
+            Hurt = 1f;
+        }
+    }
 
     public GameObject rose;
-    GameObject temp;
     int usedCount;
     float rose_cd=5f;
     bool rose_reset;
-    bool used;
-    float time;
-    Vector3 shootpoint;
-    public GameObject cursor;
-    public LayerMask layer;
-    private Camera cam;
-    public GameObject shootRange;
-    public Vector3[] roseMove = new Vector3[50];
-    int numPoints = 50;
-    LineRenderer lineRenderer;
-    public Material line;
-    public float line_hight=10;
-    bool isShoot;
 
     void Skill()
     {
@@ -91,10 +77,10 @@ public class Doll_Queen : Doll
         }
         
         //右クリックすると、shootRange出てくる
-        if(!Input.GetMouseButton(1)){
+        if(!Input.GetKey(KeyCode.F)){
             shootRange.SetActive(false);
         }
-        if(Input.GetMouseButton(1) && !rose_reset)
+        if(Input.GetKey(KeyCode.F) && !rose_reset)
         {
             //射擊方向
             ToMouse();
@@ -102,7 +88,7 @@ public class Doll_Queen : Doll
         }
         
         //道具生成
-        if (Input.GetMouseButtonUp(1) && !rose_reset)
+        if (Input.GetKeyUp(KeyCode.F) && !rose_reset)
             {
                 isShoot = false;
                 if (usedCount <= 3 && !rose_reset)
@@ -126,49 +112,37 @@ public class Doll_Queen : Doll
         lineRenderer.positionCount = 0;
     }
 
-    void ToMouse(){
-        shootpoint = transform.position + transform.forward;
-        lineRenderer.positionCount = numPoints;
-        Ray ray=cam.ScreenPointToRay(Input.mousePosition);
-        layer = 1<<0;
-        if(Physics.Raycast(ray,out RaycastHit hit,Mathf.Infinity,layer)){
-            shootRange.SetActive(true);
-            shootRange.transform.position=hit.point+Vector3.up*0.1f;
-
-            //射擊的位置
-
-            Vector3 hight =(hit.point+transform.position)/2;
-            hight+=new Vector3(0,line_hight,0);
-  
-            DrawLine(shootpoint,hight, shootRange.transform);
-            transform.LookAt(shootRange.transform);
-            float y = transform.eulerAngles.y;
-            transform.rotation = Quaternion.Euler(0f, y, 0f);
-        }
-
-        isShoot = true;
+    //射擊---------------------------------
+    protected override void ToMouse()
+    {
+        base.ToMouse();
     }
 
-    void DrawLine(Vector3 origin,Vector3 hight, Transform target)
+    protected override void DrawLine(Vector3 origin, Vector3 hight, Transform target)
     {
-        for (int i = 1; i < numPoints + 1; i++)
-        {
-            float sd = i / (float)numPoints;
-            roseMove[i - 1] = CalculatQuadraticPoint(origin,hight, target.position,  sd);
-        }
-        lineRenderer.SetPositions(roseMove);
+        base.DrawLine(origin, hight, target);
     }
 
-    Vector3 CalculatQuadraticPoint(Vector3 origin,Vector3 hight, Vector3 target, float speed)
+    protected override Vector3 CalculatQuadraticPoint(Vector3 origin, Vector3 hight, Vector3 target, float speed)
     {
-       //return =  (1-t)2P0 + 2(1-t)tP1 + t2P2 
-       float x=1-speed;
-       float sd=speed*speed;
-       float xx=x*x;
-       Vector3 pos=xx*origin;
-       pos+=2*x*speed*hight;
-       pos+=sd*target;
+        return base.CalculatQuadraticPoint(origin, hight, target, speed);
+    }
+    //---------------------------------------
 
-       return pos;
+
+    protected override IEnumerator NotFall(GameObject temp)
+    {
+        return base.NotFall(temp);
+    }
+
+
+    protected override void ItemType(string name)
+    {
+        base.ItemType(name);
+    }
+
+    protected override void ItemUse(AttackState attackState, ThrowState throwState)
+    {
+        base.ItemUse(attackState, throwState);
     }
 }

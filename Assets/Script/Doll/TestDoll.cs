@@ -15,12 +15,12 @@ public class TestDoll : Doll
     //protected float HP;               --现生命值
     //protected float SPD;              --现速度
 
-    public override bool PickItem(string name)
+    public override bool PickItem(string name,string type)
     {
         //print(Owner.playerName + " picked " + name);
         item = Resources.Load<GameObject>("Prefab/Item/" + name);
         //Item種類を付ける
-        ItemType(name);
+        ItemType(type);
 
         return true;
     }
@@ -42,9 +42,6 @@ public class TestDoll : Doll
  
         //attack && ItemAttack
         Attack();
-
-        //skillHurt
-        SkillHurt();
 
         //添加禁锢效果
         if (Input.GetKeyDown(KeyCode.P))
@@ -87,10 +84,6 @@ public class TestDoll : Doll
     }
 
 
-    protected override void SkillHurt()
-    {
-        base.SkillHurt();
-    }
 
     protected override void Move()
     {

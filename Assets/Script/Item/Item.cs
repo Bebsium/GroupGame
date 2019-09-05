@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Global;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Item : MonoBehaviour
 {
     public string itemName;
+    public string typeName;
     public bool picked = false;
 
     public int hurt = 10;
@@ -145,10 +147,10 @@ public class Item : MonoBehaviour
         if (other.gameObject.tag == "Doll")
         {
             //get item
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetKeyDown(Key.Take))
             {
                 
-                if (other.GetComponent<Doll>().PickItem(itemName))
+                if (other.GetComponent<Doll>().PickItem(itemName,typeName))
                     Destroy(gameObject);
             }
 

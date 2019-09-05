@@ -16,7 +16,7 @@ public class Item_Rose : MonoBehaviour
     void Start()
     {
         explosion.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-        roseMove=player.GetComponent<Doll_Queen>().roseMove;
+        roseMove=player.GetComponent<Doll_Queen>().itmeMove;
     }
 
     // Update is called once per frame

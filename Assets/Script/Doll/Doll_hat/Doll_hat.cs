@@ -6,12 +6,12 @@ using Global;
 public class Doll_hat : Doll
 {
 
-    public override bool PickItem(string name)
+    public override bool PickItem(string name,string type)
     {
         //print(Owner.playerName + " picked " + name);
         item = Resources.Load<GameObject>("Prefab/Item/" + name);
         //Item種類を付ける
-        ItemType(name);
+        ItemType(type);
         return true;
     }
 
@@ -19,13 +19,6 @@ public class Doll_hat : Doll
     {
         base.Start();
         Rigi.freezeRotation = true;
-
-        cam=Camera.main;
-        shootRange=Instantiate(cursor,transform);
-
-        lineRenderer = gameObject.AddComponent<LineRenderer>();
-        lineRenderer.positionCount = 0;
-        lineRenderer.material=line;
     }
 
     protected override void Loop()
@@ -41,18 +34,7 @@ public class Doll_hat : Doll
 
         //skillHurt
         SkillHurt();
-        if (Input.GetKey(KeyCode.Alpha1))
-        {
-            Hurt = 1f;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            GameObject temp = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            temp.transform.position = transform.position;
-            temp.name = "Putted Item";
-            temp.AddComponent<Item>().picked = true;
-        }
+        
 
         Skill();
     }
@@ -60,6 +42,10 @@ public class Doll_hat : Doll
     protected override void Attack()
     {
         base.Attack();
+        if (Input.GetKey(KeyCode.Alpha1))
+        {
+            Hurt = 1f;
+        }
     }
 
     protected override IEnumerator Wait()
@@ -79,11 +65,18 @@ public class Doll_hat : Doll
     }
 
 
-    protected override void SkillHurt()
+    private void SkillHurt()
     {
-        base.SkillHurt();
+        if (target_Hat != null)
+        {
+            if (target_Hat.isAttack)
+            {
+                AddBuff(Global.BuffSort.Stun, 5f);
+                Hurt = target_Hat.SkillAttack();
+                target_Hat.isAttack = false;
+            }
+        }
     }
-
     protected override void Move()
     {
 
@@ -102,48 +95,36 @@ public class Doll_hat : Doll
         base.Jump();
     }
     public GameObject hat;
-    bool used;
-    float time;
-    Vector3 shootpoint;
-    public GameObject cursor;
-    public LayerMask layer;
-    private Camera cam;
-    public GameObject shootRange;
-    public Vector3[] hatMove = new Vector3[50];
-    int numPoints = 50;
-    LineRenderer lineRenderer;
-    public Material line;
-    public float line_hight=10;
-    bool isShoot;
+    
     public GameObject hatCone;
 
     void Skill()
     {
-        if (used)
+        if (usedSkill)
         {
             //cool down
             time += Time.deltaTime; 
             if (time >= 3.0f)
             {
-                used = false;
+                usedSkill = false;
                 time = 0;
             }
         }
 
-        //右クリックすると、shootRange出てくる
-        if(!Input.GetMouseButton(1)){
+        //Fを押すと、shootRange出てくる
+        if(!Input.GetKey(KeyCode.F)){
             shootRange.SetActive(false);
         }
-        if(Input.GetMouseButton(1) && !used)
+        if(Input.GetKey(KeyCode.F) && !usedSkill)
         {
             //射擊方向
             ToMouse();
         }
         
-        //丟道具
-        if (Input.GetMouseButtonUp(1) && !used)
+        //使用道具
+        if (Input.GetKeyUp(KeyCode.F) && !usedSkill)
             {
-                used = true;
+                usedSkill = true;
                 isShoot = false;
                 CreateHat();
             }

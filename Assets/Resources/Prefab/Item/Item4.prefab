@@ -118,6 +118,9 @@ MonoBehaviour:
   explosion: 0
   unUsed: {fileID: 0}
   used: {fileID: 0}
+  player: {fileID: 0}
+  item: 0
+  itemMove: []
   isAttack: 0
   isThrow: 0
 --- !u!65 &6646479003484889600

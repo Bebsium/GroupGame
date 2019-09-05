@@ -17,7 +17,7 @@ public class Item_hat : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        hatMove=player.GetComponent<Doll_hat>().hatMove;
+        hatMove=player.GetComponent<Doll_hat>().itmeMove;
         gameObject.tag = "Hat";
     }
 

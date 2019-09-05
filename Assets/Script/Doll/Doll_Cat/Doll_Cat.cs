@@ -5,19 +5,17 @@ using Global;
 
 public class Doll_Cat : Doll
 {
-    bool used;
-    bool used_cd;
     float maxSoundTime;
     float cdTime;
 
     AudioSource sound;
 
-    public override bool PickItem(string name)
+    public override bool PickItem(string name,string type)
     {
         //print(Owner.playerName + " picked " + name);
         item = Resources.Load<GameObject>("Prefab/Item/" + name);
         //Item種類を付ける
-        ItemType(name);
+        ItemType(type);
         return true;
     }
 
@@ -42,12 +40,15 @@ public class Doll_Cat : Doll
         //attack && ItemAttack
         Attack();
 
-        //skillHurt
-        SkillHurt();
+        Skill();
+    }
 
-        if (Input.GetKey(KeyCode.Alpha1))
+    protected override void Attack()
+    {
+        base.Attack();
+        if (Input.GetKey(Key.Skill))
         {
-            if (used)
+            if (usedSkill)
             {
                 Hurt = 10 * 0.3f;
             }
@@ -57,21 +58,6 @@ public class Doll_Cat : Doll
             }
             
         }
-
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            GameObject temp = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            temp.transform.position = transform.position;
-            temp.name = "Putted Item";
-            temp.AddComponent<Item>().picked = true;
-        }
-
-        Skill();
-    }
-
-    protected override void Attack()
-    {
-        base.Attack();
     }
 
     protected override IEnumerator Wait()
@@ -88,12 +74,6 @@ public class Doll_Cat : Doll
     protected override void OnCollisionEnter(Collision collision)
     {
         base.OnCollisionEnter(collision);
-    }
-
-
-    protected override void SkillHurt()
-    {
-        base.SkillHurt();
     }
 
     protected override void Move()
@@ -120,17 +100,17 @@ public class Doll_Cat : Doll
     void Skill()
     {
 
-        if (!used && !used_cd)
+        if (!usedSkill && !usedSkill_cd)
         {
             SoundOn();     
         }
 
-        if (used && !used_cd)
+        if (usedSkill && !usedSkill_cd)
         {
             CoolDown();
         }
 
-        if (used_cd)
+        if (usedSkill_cd)
         {
             SoundOff();
         }
@@ -142,7 +122,7 @@ public class Doll_Cat : Doll
         //print("CD" + maxSoundTime);
         if (maxSoundTime <= 0)
         {
-            used_cd = false;
+            usedSkill_cd = false;
         }
     }
 
@@ -153,8 +133,8 @@ public class Doll_Cat : Doll
         if (cdTime <= 0)
         {
             print("stop");
-            used = false;
-            used_cd = true;
+            usedSkill = false;
+            usedSkill_cd = true;
         }
     }
 
@@ -164,7 +144,7 @@ public class Doll_Cat : Doll
         maxSoundTime = Random.Range(20, 30);
         print(maxSoundTime + "     " + cdTime);
         print("Play");
-        used = true;
+        usedSkill = true;
         StartCoroutine(AbilityUp(maxSoundTime));
         
     }

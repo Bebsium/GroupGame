@@ -46,6 +46,8 @@ namespace Global
         public static KeyCode Back { get { return _back; } }
         public static KeyCode Right { get { return _right; } }
         public static KeyCode Left { get { return _left; } }
+        public static KeyCode Take{get {return _take;}}
+        public static KeyCode Skill{get {return _skill;}}
         #endregion
         /// <summary>
         /// 改变键位
@@ -71,12 +73,14 @@ namespace Global
         }
         #region private
         private static KeyCode _enter = KeyCode.Q;
-        private static KeyCode _leave = KeyCode.E;
+        private static KeyCode _leave = KeyCode.Q;
         private static KeyCode _jump = KeyCode.Space;
         private static KeyCode _forward = KeyCode.W;
         private static KeyCode _back = KeyCode.S;
         private static KeyCode _right = KeyCode.D;
         private static KeyCode _left = KeyCode.A;
+        private static KeyCode _take = KeyCode.E;
+        private static KeyCode _skill = KeyCode.F;
         #endregion
     }
 

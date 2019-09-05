@@ -106,7 +106,7 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
     }
 
     //拾取物件，子类必须实现
-    public abstract bool PickItem(string name);
+    public abstract bool PickItem(string name,string type);
 
     //----------------[Protected Area]-----------------
     protected int DamagedNumber { get { return _damagedNumber; } }
@@ -141,16 +141,18 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
             StartCoroutine(AttrProTimeCalc(atk, spd, def, time));
         }
     }
-    bool used;
-    float time;
-    Vector3 shootpoint;
+    protected bool usedSkill;
+    protected bool usedSkill_cd;
+    protected bool used;
+    protected float time;
+    protected Vector3 shootpoint;
     public GameObject cursor;
     public LayerMask layer;
     private Camera cam;
     public GameObject shootRange;
     public Vector3[] itmeMove = new Vector3[50];
     int numPoints = 50;
-    LineRenderer lineRenderer;
+    protected LineRenderer lineRenderer;
     public Material line;
     public float line_hight = 10;
     protected bool isShoot;
@@ -441,7 +443,7 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
             attackState = AttackState.StickAttack;
             throwState = ThrowState.lightThrow;
         }
-        else if (name == "Nightstand")
+        else if (name == "LargeObject")
         {
             attackState = AttackState.HeavyAttack;
             throwState = ThrowState.heavyThrow;
@@ -654,18 +656,6 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
         }
         //------------------------------
     }
-    protected virtual void SkillHurt()
-    {
-        if (target_Hat != null)
-        {
-            if (target_Hat.isAttack)
-            {
-                AddBuff(Global.BuffSort.Stun, 5f);
-                Hurt = target_Hat.SkillAttack();
-                target_Hat.isAttack = false;
-            }
-        }
-    }
     //射擊---------------------------------
     protected virtual void ToMouse()
     {
@@ -685,6 +675,8 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
 
             DrawLine(shootpoint, hight, shootRange.transform);
             transform.LookAt(shootRange.transform);
+            float y=transform.localEulerAngles.y;
+            transform.rotation = Quaternion.Euler(0, y, 0);
         }
 
         isShoot = true;
