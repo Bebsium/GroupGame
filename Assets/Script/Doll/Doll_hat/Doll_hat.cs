@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Global;
 
 public class Doll_hat : Doll
 {
@@ -9,6 +10,8 @@ public class Doll_hat : Doll
     {
         //print(Owner.playerName + " picked " + name);
         item = Resources.Load<GameObject>("Prefab/Item/" + name);
+        //Item種類を付ける
+        ItemType(name);
         return true;
     }
 
@@ -28,6 +31,16 @@ public class Doll_hat : Doll
     protected override void Loop()
     {
         //相当于Update
+        if (itemSetting)
+        {
+            ItemUse(attackState, throwState);
+        }
+
+        //attack && ItemAttack
+        Attack();
+
+        //skillHurt
+        SkillHurt();
         if (Input.GetKey(KeyCode.Alpha1))
         {
             Hurt = 1f;
@@ -44,8 +57,38 @@ public class Doll_hat : Doll
         Skill();
     }
 
+    protected override void Attack()
+    {
+        base.Attack();
+    }
+
+    protected override IEnumerator Wait()
+    {
+        return base.Wait();
+    }
+    //Item attack--------------------------
+    protected override void OnTriggerEnter(Collider other)
+    {
+        base.OnTriggerEnter(other);
+
+    }
+
+    protected override void OnCollisionEnter(Collision collision)
+    {
+        base.OnCollisionEnter(collision);
+    }
+
+
+    protected override void SkillHurt()
+    {
+        base.SkillHurt();
+    }
+
     protected override void Move()
     {
+
+        if (HasBuff(Global.BuffSort.Prisoner))
+            return;
         //重写移动
         if (!isShoot)
         {
@@ -138,50 +181,38 @@ public class Doll_hat : Doll
         hatCone.transform.SetParent(null);
         lineRenderer.positionCount = 0;
     }
-    
-    void ToMouse(){
-        shootpoint = transform.position + transform.forward;
-        lineRenderer.positionCount = numPoints;
-        Ray ray=cam.ScreenPointToRay(Input.mousePosition);
-        layer = 1<<0;
-        if(Physics.Raycast(ray,out RaycastHit hit,Mathf.Infinity,layer)){
-            shootRange.SetActive(true);
-            shootRange.transform.position=hit.point+Vector3.up*0.1f;
 
-            //射擊的位置
-
-            Vector3 hight =(hit.point+transform.position)/2;
-            hight+=new Vector3(0,line_hight,0);
-  
-            DrawLine(shootpoint,hight, shootRange.transform);
-            transform.LookAt(shootRange.transform);
-            float y = transform.eulerAngles.y;
-            transform.rotation = Quaternion.Euler(0f, y,0f);
-        }
-
-        isShoot = true;
+    //射擊---------------------------------
+    protected override void ToMouse()
+    {
+        base.ToMouse();
     }
 
-    void DrawLine(Vector3 origin,Vector3 hight, Transform target)
+    protected override void DrawLine(Vector3 origin, Vector3 hight, Transform target)
     {
-        for (int i = 1; i < numPoints + 1; i++)
-        {
-            float sd = i / (float)numPoints;
-            hatMove[i - 1] = CalculatQuadraticPoint(origin,hight, target.position,  sd);
-        }
-        lineRenderer.SetPositions(hatMove);
+        base.DrawLine(origin, hight, target);
     }
 
-    Vector3 CalculatQuadraticPoint(Vector3 origin,Vector3 hight, Vector3 target, float speed)
+    protected override Vector3 CalculatQuadraticPoint(Vector3 origin, Vector3 hight, Vector3 target, float speed)
     {
-       //return =  (1-t)2P0 + 2(1-t)tP1 + t2P2 
-       float x=1-speed;
-       float sd=speed*speed;
-       float xx=x*x;
-       Vector3 pos=xx*origin;
-       pos+=2*x*speed*hight;
-       pos+=sd*target;
+        return base.CalculatQuadraticPoint(origin, hight, target, speed);
+    }
+    //---------------------------------------
 
-       return pos;
+
+    protected override IEnumerator NotFall(GameObject temp)
+    {
+        return base.NotFall(temp);
+    }
+
+
+    protected override void ItemType(string name)
+    {
+        base.ItemType(name);
+    }
+
+    protected override void ItemUse(AttackState attackState, ThrowState throwState)
+    {
+        base.ItemUse(attackState, throwState);
     }
 }

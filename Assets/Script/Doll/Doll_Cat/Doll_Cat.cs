@@ -1,47 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Global;
 
 public class Doll_Cat : Doll
 {
-    public GameObject item;
-
-    //攻擊類型
-    public enum AttackState
-    {
-        StickAttack,
-        HeavyAttack,
-        CampstoolAttack,
-    }
-
-    //投擲類型
-    public enum ThrowState
-    {
-        lightThrow,
-        heavyThrow,
-        stickThrow,
-    }
-
     bool used;
     bool used_cd;
     float maxSoundTime;
     float cdTime;
-
-    public AttackState attackState;
-    public ThrowState throwState;
-
-    public bool itemSetting;
-    public bool isAttack;
-    //KO值回傳-------------
-    public float Knockout { set { _ko -= value; } }
-    private float _ko;
-    //--------------------
 
     AudioSource sound;
 
     public override bool PickItem(string name)
     {
         //print(Owner.playerName + " picked " + name);
+        item = Resources.Load<GameObject>("Prefab/Item/" + name);
+        //Item種類を付ける
+        ItemType(name);
         return true;
     }
 
@@ -58,6 +34,17 @@ public class Doll_Cat : Doll
     {
 
         //相当于Update
+        if (itemSetting)
+        {
+            ItemUse(attackState, throwState);
+        }
+
+        //attack && ItemAttack
+        Attack();
+
+        //skillHurt
+        SkillHurt();
+
         if (Input.GetKey(KeyCode.Alpha1))
         {
             if (used)
@@ -82,19 +69,45 @@ public class Doll_Cat : Doll
         Skill();
     }
 
-    private void OnTriggerStay(Collider other)
+    protected override void Attack()
     {
+        base.Attack();
+    }
+
+    protected override IEnumerator Wait()
+    {
+        return base.Wait();
+    }
+    //Item attack--------------------------
+    protected override void OnTriggerEnter(Collider other)
+    {
+        base.OnTriggerEnter(other);
+
+    }
+
+    protected override void OnCollisionEnter(Collision collision)
+    {
+        base.OnCollisionEnter(collision);
+    }
 
 
-
-
+    protected override void SkillHurt()
+    {
+        base.SkillHurt();
     }
 
     protected override void Move()
     {
+
+        if (HasBuff(Global.BuffSort.Prisoner))
+            return;
         //重写移动
-        base.Move();
+        if (!isShoot)
+        {
+            base.Move();
+        }
     }
+
 
     protected override void Jump()
     {
@@ -168,5 +181,38 @@ public class Doll_Cat : Doll
         //buff remove
         RemoveBuff(Global.BuffSort.Invulnerable);
         defence = 0f;
+    }
+    //射擊---------------------------------
+    protected override void ToMouse()
+    {
+        base.ToMouse();
+    }
+
+    protected override void DrawLine(Vector3 origin, Vector3 hight, Transform target)
+    {
+        base.DrawLine(origin, hight, target);
+    }
+
+    protected override Vector3 CalculatQuadraticPoint(Vector3 origin, Vector3 hight, Vector3 target, float speed)
+    {
+        return base.CalculatQuadraticPoint(origin, hight, target, speed);
+    }
+    //---------------------------------------
+
+
+    protected override IEnumerator NotFall(GameObject temp)
+    {
+        return base.NotFall(temp);
+    }
+
+
+    protected override void ItemType(string name)
+    {
+        base.ItemType(name);
+    }
+
+    protected override void ItemUse(AttackState attackState, ThrowState throwState)
+    {
+        base.ItemUse(attackState, throwState);
     }
 }

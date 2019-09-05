@@ -135,7 +135,7 @@ public class Item : MonoBehaviour
         unUsed.gameObject.SetActive(false);
         used.enabled=true;
         picked = false;
-        itemMove = player.GetComponent<TestDoll>().itmeMove;
+        itemMove = player.GetComponent<Doll>().itmeMove;
         //item = true;
     }
 
