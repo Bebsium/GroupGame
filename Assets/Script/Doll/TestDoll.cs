@@ -65,6 +65,12 @@ public class TestDoll : Doll
         lineRenderer = gameObject.AddComponent<LineRenderer>();
         lineRenderer.positionCount = 0;
         lineRenderer.material = line;
+
+        //时光回溯
+        gameTime = 0f;
+        skillCD = 4f;
+        dollStatuses = new Queue<DollStatus>();
+        icon = GameObject.Find("TimeLapse");
     }
 
     protected override void Loop()
@@ -173,7 +179,42 @@ public class TestDoll : Doll
                     
                 }
         }
-        
+
+        //时光回溯,回到2秒前状态，CD4秒
+        gameTime += Time.deltaTime;
+        skillCD -= Time.deltaTime;
+        if (skillCD < 0) skillCD = 0;
+        DollStatus dollStatus = new DollStatus(transform.position, transform.rotation, HP);
+
+        if (Owner == "" || Owner == null)
+        {
+            icon.GetComponent<CanvasGroup>().alpha = 0;
+            icon.GetComponent<CanvasGroup>().interactable = false;
+            icon.GetComponent<CanvasGroup>().blocksRaycasts = false;
+        }
+
+
+        if (time < 2.0f)
+        {
+            dollStatuses.Enqueue(dollStatus);
+        }
+        else
+        {
+            dollStatuses.Dequeue();
+            dollStatuses.Enqueue(dollStatus);
+        }
+
+        if (Input.GetKeyDown(KeyCode.R) && skillCD == 0)
+        {
+            skillCD = 4f;
+            dollStatus = dollStatuses.Dequeue();
+
+            transform.position = dollStatus.position;
+            transform.rotation = dollStatus.rotation;
+            Hurt = HP - dollStatus.HP;
+
+            dollStatuses.Enqueue(dollStatus);
+        }
     }
 
     IEnumerator Wait()
@@ -437,5 +478,28 @@ Item target_Item;
                     break;
             }
         }
+    }
+
+    //时光回溯
+    private float gameTime;
+    private float skillCD;
+    private Queue<DollStatus> dollStatuses;
+    public GameObject icon;
+
+    public struct DollStatus
+    {
+        Vector3 _position;
+        Quaternion _rotation;
+        float _HP;
+
+        public DollStatus(Vector3 position, Quaternion rotation, float HP)
+        {
+            _position = position;
+            _rotation = rotation;
+            _HP = HP;
+        }
+        public Vector3 position { get { return _position; } set { _position = value; } }
+        public Quaternion rotation { get { return _rotation; } set { _rotation = value; } }
+        public float HP { get { return _HP; } set { _HP = value; } }
     }
 }
