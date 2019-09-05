@@ -106,7 +106,7 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
     }
 
     //拾取物件，子类必须实现
-    public abstract bool PickItem(string name,string type);
+    public abstract bool PickItem(string name,string type,int durability);
 
     //----------------[Protected Area]-----------------
     protected int DamagedNumber { get { return _damagedNumber; } }
@@ -438,88 +438,64 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
     //Item
     protected virtual void ItemType(string name)
     {
-        if (name == "Stick")
-        {
-            attackState = AttackState.StickAttack;
-            throwState = ThrowState.lightThrow;
-        }
-        else if (name == "LargeObject")
+         if (name == "Heavy")
         {
             attackState = AttackState.HeavyAttack;
-            throwState = ThrowState.heavyThrow;
-        }
-        else if (name == "Pillow" || name == "Board")
+            throwState = ThrowState.HeavyThrow;
+        }else if (name == "BoardHeavy" || name == "BoardLight" ||name == "Board")
+        {
+            attackState = AttackState.StickAttack;
+            if(name == "BoardHeavy"){
+                throwState = ThrowState.HeavyThrow;
+            }else if(name == "BoardLight"){
+                throwState = ThrowState.StickThrow;
+            }else
+            {
+                
+            }
+        }else if (name == "Campstool")
         {
             attackState = AttackState.CampstoolAttack;
-
-            if (name == "Pillow")
-            {
-                throwState = ThrowState.heavyThrow;
-            }
-            else
-            {
-                throwState = ThrowState.stickThrow;
-            }
+            throwState = ThrowState.HeavyThrow;
         }
     }
 
-    protected virtual void ItemUse(AttackState attackState, ThrowState throwState)
-    {
+    //AttackAnim
+    void AttackAnim(){
         switch (attackState)
         {
             case AttackState.StickAttack:
-                StickAttack();
+                //StickAttack anim
                 break;
             case AttackState.HeavyAttack:
-                HeavyAttack();
+                
                 break;
             case AttackState.CampstoolAttack:
-                CampstoolAttack();
+                
+                break;
+            default:
+
                 break;
         }
+    }
+
+    //ThrowAnim
+    void ThrowAnim(){
         switch (throwState)
         {
-            case ThrowState.lightThrow:
-                LightThrow();
+            case ThrowState.LightThrow:
+                //LightThrow anim
                 break;
-            case ThrowState.heavyThrow:
-                HeavyThrow();
+            case ThrowState.HeavyThrow:
+                
                 break;
-            case ThrowState.stickThrow:
-                StickThrow();
+            case ThrowState.StickThrow:
+                
+                break;
+            default:
+
                 break;
         }
-    }
-    //Attack
-    void StickAttack()
-    {
-
-    }
-
-    void HeavyAttack()
-    {
-
-    }
-
-    void CampstoolAttack()
-    {
-
-    }
-
-    //Throw
-    void LightThrow()
-    {
-
-    }
-
-    void HeavyThrow()
-    {
-
-    }
-
-    void StickThrow()
-    {
-
     }
     //attack-------------------
     [SerializeField]
@@ -548,36 +524,38 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
         }
         else
         {
-            if (temp == null)
+            //attack
+            if (Input.GetMouseButtonDown(0) && !isAttack)
             {
-                itemSetting = false;
-                //attack
-                if (Input.GetMouseButtonDown(0) && !isAttack)
+                isAttack = true;
+                AttackAnim();
+                //ものをあってた場合は1秒過ぎるとhurtなし
+                StartCoroutine(Wait());
+            }
+
+            }
+            if(itemSetting){
+                //throw
+                if (Input.GetMouseButton(1) && used)
                 {
-                    isAttack = true;
-                    //ものをあってた場合は1秒過ぎるとhurtなし
-                    StartCoroutine(Wait());
+                    //射擊方向
+                    ToMouse();
                 }
 
+                //丟道具
+                if (Input.GetMouseButtonUp(1) && used)
+                {
+                    ThrowAnim();
+                    used = false;
+                    isShoot = false;
+                    temp.transform.SetParent(null);
+                    temp = null;
+                    lineRenderer.positionCount = 0;
+                    itemSetting = false;
+                }
             }
-            //throw
-            if (Input.GetMouseButton(1) && used)
-            {
-                //射擊方向
-                ToMouse();
-            }
-
-            //丟道具
-            if (Input.GetMouseButtonUp(1) && used)
-            {
-                used = false;
-                isShoot = false;
-                temp.transform.SetParent(null);
-                temp = null;
-                lineRenderer.positionCount = 0;
-
-            }
-        }
+            
+        
 
     }
 

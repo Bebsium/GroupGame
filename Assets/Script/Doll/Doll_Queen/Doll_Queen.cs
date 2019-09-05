@@ -7,10 +7,11 @@ public class Doll_Queen : Doll
 {
 
 
-    public override bool PickItem(string name,string type)
+    public override bool PickItem(string name,string type,int durability)
     {
         //print(Owner.playerName + " picked " + name);
         item = Resources.Load<GameObject>("Prefab/Item/" + name);
+        item.GetComponent<Item>().durability=durability;
         //Item種類を付ける
         ItemType(type);
         return true;
@@ -26,11 +27,6 @@ public class Doll_Queen : Doll
     {
 
         //相当于Update
-        if (itemSetting)
-        {
-            ItemUse(attackState, throwState);
-        }
-
         //attack && ItemAttack
         Attack();
  
@@ -141,8 +137,4 @@ public class Doll_Queen : Doll
         base.ItemType(name);
     }
 
-    protected override void ItemUse(AttackState attackState, ThrowState throwState)
-    {
-        base.ItemUse(attackState, throwState);
-    }
 }

@@ -16,15 +16,20 @@ public class MenuUIManager : MonoBehaviour
     bool onCharacter;
     public GameObject doll;
     List<GameObject> dollList;
+    public List<AudioClip> voiceList;
     public Toggle window_toggle;
     public Toggle SE_toggle;
     public Toggle voice_toggle;
     public Toggle BGM_toggle;
+    private AudioSource _BGM;
+    private AudioSource _SE;
+    private AudioSource _voice;
+    
     // Start is called before the first frame update
     void Start()
     {
         dollList = new List<GameObject>();
-        for(int i=0; i<4; i++)
+        for(int i=0; i<doll.transform.childCount; i++)
         {
             dollList.Add(doll.transform.GetChild(i).gameObject);
             dollList[i].SetActive(false);
@@ -36,13 +41,10 @@ public class MenuUIManager : MonoBehaviour
         startBG = canvas.transform.Find("StartBG").gameObject;
         settingMenu.SetActive(false);
         characterMenu.SetActive(false);
+        _BGM=gameObject.GetComponent<AudioSource>();
+        _voice=doll.GetComponent<AudioSource>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     public void Play(){
         SceneManager.LoadScene("Default");
     } 
@@ -52,7 +54,6 @@ public class MenuUIManager : MonoBehaviour
         startBtn.SetActive(!onSetting);
         settingMenu.SetActive(onSetting);
         characterMenu.SetActive(false);
-
     }
 
     int index = 0;
@@ -68,17 +69,68 @@ public class MenuUIManager : MonoBehaviour
     public void CharacterChangeRight()
     {
         index++;
-        if (index >= 3) { index = 3; }
-        dollList[index-1].SetActive(false);
-        dollList[index].SetActive(true);
+        if (index >= doll.transform.childCount) {
+            index = 0; 
+            dollList[doll.transform.childCount-1].SetActive(false);
+            dollList[index].SetActive(true);
+        }else{
+            dollList[index-1].SetActive(false);
+            dollList[index].SetActive(true);
+        }
+        
     }
 
     public void CharacterChangeLeft()
     {
         index--;
-        if (index <= 0) { index = 0; }
-        dollList[index + 1].SetActive(false);
-        dollList[index].SetActive(true);
+        if (index < 0) {
+            index = doll.transform.childCount-1;
+            
+            dollList[0].SetActive(false);
+            dollList[index].SetActive(true);
+        }else{
+            dollList[index + 1].SetActive(false);
+            dollList[index].SetActive(true);
+        }
+    }
+    
+    public void CharacterVoice(){
+        GameObject temp = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+        if(temp.name=="HatBtn"){
+            _voice.clip=voiceList[0];
+        }else if(temp.name=="CatBtn"){
+            _voice.clip=voiceList[1];
+        }else if(temp.name=="QueenBtn"){
+            _voice.clip=voiceList[2];
+        }else{
+            _voice.clip=voiceList[3];
+        }
+    }
+
+    public void PageChange(){
+        GameObject temp = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+        if(temp.name=="DescriptionBtn"){
+            index=1;
+            dollList[0].SetActive(false);
+            dollList[index].SetActive(true);
+        }else if(temp.name=="HatBtn"){
+            index=2;
+            dollList[0].SetActive(false);
+            dollList[index].SetActive(true);
+        }else if(temp.name=="CatBtn"){
+            index=3;
+            dollList[0].SetActive(false);
+            dollList[index].SetActive(true);
+        }else if(temp.name=="QueenBtn"){
+            index=4;
+            dollList[0].SetActive(false);
+            dollList[index].SetActive(true);
+        }else{
+            index=5;
+            dollList[0].SetActive(false);
+            dollList[index].SetActive(true);
+        }
+        
     }
 
     public void StartGame()
@@ -103,7 +155,10 @@ public class MenuUIManager : MonoBehaviour
     {
         if (SE_toggle.isOn == true)
         {
-
+            PlayerPrefs.SetInt("SEVolume",1);
+        }else
+        {
+            PlayerPrefs.SetInt("SEVolume",0);
         }
     }
 
@@ -111,16 +166,24 @@ public class MenuUIManager : MonoBehaviour
     {
         if (voice_toggle.isOn == true)
         {
-
+            PlayerPrefs.SetInt("voiceVolume",1);
+        }else
+        {
+            PlayerPrefs.SetInt("voiceVolume",0);
         }
+        _voice.volume=PlayerPrefs.GetInt("voiceVolume");
     }
 
     public void BGM()
     {
         if (BGM_toggle.isOn == true)
         {
-
+            PlayerPrefs.SetInt("BGMVolume",1);
+        }else
+        {
+            PlayerPrefs.SetInt("BGMVolume",0);
         }
+        _BGM.volume=PlayerPrefs.GetInt("BGMVolume");
     }
 
 

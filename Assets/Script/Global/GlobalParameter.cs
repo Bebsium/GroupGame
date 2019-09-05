@@ -10,6 +10,10 @@ namespace Global
     /// </summary>
     public static class Parameter
     {
+        //遊戲音效
+        public static int BGMVolume;
+        public static int voiceVolume;
+        public static int SEVolume;
         //灵魂状态移动速度
         public static float SoulSPD { get { return 10f; } }
         //人偶最生命值上限
@@ -247,6 +251,7 @@ namespace Global
     //攻擊類型
     public enum AttackState
     {
+        defaultAttack,
         StickAttack,
         HeavyAttack,
         CampstoolAttack,
@@ -255,8 +260,10 @@ namespace Global
     //投擲類型
     public enum ThrowState
     {
-        lightThrow,
-        heavyThrow,
-        stickThrow,
+        defaultThrow,
+        LightThrow,
+        HeavyThrow,
+        StickThrow,
     }
+
 }

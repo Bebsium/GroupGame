@@ -102,7 +102,8 @@ public class Item : MonoBehaviour
             //GetComponent<Renderer>().material.color = Color.Lerp(color, colTemp, Mathf.Sin(Time.time)*1);
             //if(cor == null)
             //    cor =  StartCoroutine(ColorChange(1f));
-            Destroy(gameObject,3);
+            Destroy(gameObject,1);
+            player.gameObject.GetComponent<Doll>().itemSetting = false;
         }
 
 
@@ -150,7 +151,7 @@ public class Item : MonoBehaviour
             if (Input.GetKeyDown(Key.Take))
             {
                 
-                if (other.GetComponent<Doll>().PickItem(itemName,typeName))
+                if (other.GetComponent<Doll>().PickItem(itemName,typeName,durability))
                     Destroy(gameObject);
             }
 
