@@ -142,6 +142,8 @@ public class Doll_Queen : Doll
   
             DrawLine(shootpoint,hight, shootRange.transform);
             transform.LookAt(shootRange.transform);
+            float y = transform.eulerAngles.y;
+            transform.rotation = Quaternion.Euler(0f, y, 0f);
         }
 
         isShoot = true;

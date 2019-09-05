@@ -8,6 +8,7 @@ public class Doll_hat : Doll
     public override bool PickItem(string name)
     {
         //print(Owner.playerName + " picked " + name);
+        item = Resources.Load<GameObject>("Prefab/Item/" + name);
         return true;
     }
 
@@ -154,6 +155,8 @@ public class Doll_hat : Doll
   
             DrawLine(shootpoint,hight, shootRange.transform);
             transform.LookAt(shootRange.transform);
+            float y = transform.eulerAngles.y;
+            transform.rotation = Quaternion.Euler(0f, y,0f);
         }
 
         isShoot = true;
