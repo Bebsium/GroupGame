@@ -203,7 +203,7 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
     private float _tempDefense;
     private bool _attrPromoted = false;
 
-    private List<Buff> _buff;
+    private List<Buff> _buff = new List<Buff>();
 
     /// <summary>
     /// 操纵人偶
