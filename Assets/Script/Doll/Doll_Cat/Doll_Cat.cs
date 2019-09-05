@@ -4,40 +4,13 @@ using UnityEngine;
 
 public class Doll_Cat : Doll
 {
-    public GameObject item;
 
-    //攻擊類型
-    public enum AttackState
-    {
-        StickAttack,
-        HeavyAttack,
-        CampstoolAttack,
-    }
-
-    //投擲類型
-    public enum ThrowState
-    {
-        lightThrow,
-        heavyThrow,
-        stickThrow,
-    }
+    AudioSource sound;
 
     bool used;
     bool used_cd;
     float maxSoundTime;
     float cdTime;
-
-    public AttackState attackState;
-    public ThrowState throwState;
-
-    public bool itemSetting;
-    public bool isAttack;
-    //KO值回傳-------------
-    public float Knockout { set { _ko -= value; } }
-    private float _ko;
-    //--------------------
-
-    AudioSource sound;
 
     public override bool PickItem(string name)
     {
