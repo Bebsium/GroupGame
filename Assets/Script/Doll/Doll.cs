@@ -155,6 +155,7 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
     protected LineRenderer lineRenderer;
     public Material line;
     public float line_hight = 10;
+    public float speed;
     protected bool isShoot;
     /// <summary>
     /// 初始化
@@ -664,7 +665,7 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
     {
         for (int i = 1; i < numPoints + 1; i++)
         {
-            float sd = i / (float)numPoints;
+            float sd = speed*i / (float)numPoints;
             itmeMove[i - 1] = CalculatQuadraticPoint(origin, hight, target.position, sd);
         }
         lineRenderer.SetPositions(itmeMove);

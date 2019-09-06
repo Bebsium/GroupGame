@@ -756,6 +756,7 @@ MonoBehaviour:
   - {x: 0, y: 0, z: 0}
   line: {fileID: 2100000, guid: f72e1ea5f0483344b82fef47b7786ee4, type: 2}
   line_hight: 10
+  speed: 0
   _owner: 
   _hp: 0
   _cd: 0
@@ -1221,6 +1222,7 @@ MonoBehaviour:
   - {x: 0, y: 0, z: 0}
   line: {fileID: 2100000, guid: f72e1ea5f0483344b82fef47b7786ee4, type: 2}
   line_hight: 10
+  speed: 0
   _owner: 
   _hp: 0
   _cd: 0
@@ -4835,6 +4837,7 @@ MonoBehaviour:
   - {x: 0, y: 0, z: 0}
   line: {fileID: 2100000, guid: f72e1ea5f0483344b82fef47b7786ee4, type: 2}
   line_hight: 10
+  speed: 0
   _owner: 
   _hp: 0
   _cd: 0
@@ -5536,7 +5539,8 @@ MonoBehaviour:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   line: {fileID: 2100000, guid: f72e1ea5f0483344b82fef47b7786ee4, type: 2}
-  line_hight: 10
+  line_hight: 5
+  speed: 0
   _owner: 
   _hp: 0
   _cd: 0
