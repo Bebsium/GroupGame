@@ -9,6 +9,7 @@ public class Doll_hat : Doll
     public override bool PickItem(string name,string type,int durability)
     {
         //print(Owner.playerName + " picked " + name);
+        anim.SetBool("carry", true);
         item = Resources.Load<GameObject>("Prefab/Item/" + name);
         item.GetComponent<Item>().durability=durability;
         //Item種類を付ける
@@ -44,9 +45,9 @@ public class Doll_hat : Doll
         }
     }
 
-    protected override IEnumerator Wait()
+    protected override IEnumerator WaitAttack()
     {
-        return base.Wait();
+        return base.WaitAttack();
     }
     //Item attack--------------------------
     protected override void OnTriggerEnter(Collider other)

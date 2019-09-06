@@ -10,6 +10,7 @@ public class Doll_Queen : Doll
     public override bool PickItem(string name,string type,int durability)
     {
         //print(Owner.playerName + " picked " + name);
+        anim.SetBool("carry", true);
         item = Resources.Load<GameObject>("Prefab/Item/" + name);
         item.GetComponent<Item>().durability=durability;
         //Item種類を付ける

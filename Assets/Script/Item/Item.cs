@@ -89,7 +89,7 @@ public class Item : MonoBehaviour
 
             }
             if(isThrow){
-                Move();
+                StartCoroutine(Move());
             }
             
         }
@@ -109,8 +109,9 @@ public class Item : MonoBehaviour
 
     }
 
-    bool Move()
+    IEnumerator Move()
     {
+        yield return new WaitForSeconds(0.25f);
         //item移動
         if (movepoint <= itemMove.Length - 1)
         {
@@ -129,7 +130,6 @@ public class Item : MonoBehaviour
             gameObject.GetComponent<Rigidbody>().isKinematic = false;
             used.enabled = false;
         }
-        return true;
     }
 
     IEnumerator PickedChange()
@@ -150,7 +150,6 @@ public class Item : MonoBehaviour
             //get item
             if (Input.GetKeyDown(Key.Take))
             {
-                
                 if (other.GetComponent<Doll>().PickItem(itemName,typeName,durability))
                     Destroy(gameObject);
             }

@@ -162,7 +162,6 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
     /// </summary>
     protected virtual void Start()
     {
-        gameObject.tag = "Doll";
         gameObject.layer = LayerMask.NameToLayer("Doll");
         if (GetComponent<Rigidbody>())
             _rigi = GetComponent<Rigidbody>();
@@ -182,6 +181,9 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
         lineRenderer = gameObject.AddComponent<LineRenderer>();
         lineRenderer.positionCount = 0;
         lineRenderer.material = line;
+        //anim
+        controller = GetComponent<CapsuleCollider>();
+        anim = GetComponent<Animator>();
     }
 
     /// <summary>
@@ -192,9 +194,18 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
     /// <summary>
     /// 人偶基础移动
     /// </summary>
+    float h = 0, v = 0;
     protected virtual void Move()
     {
+        
         transform.SampleMove(SPD);
+        if (Input.GetKey(Key.Forward) || Input.GetKey(Key.Back) || Input.GetKey(Key.Right) || Input.GetKey(Key.Left))//移动+拾取道具
+        {
+            anim.SetBool("run", true);
+        }else
+        {
+            anim.SetBool("run", false);
+        }
     }
 
     /// <summary>
@@ -203,6 +214,10 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
     protected virtual void Jump()
     {
         Rigi.SampleJump();
+        if (Input.GetKeyDown(Key.Jump))
+        {
+            anim.SetTrigger("jump");
+        }
     }
 
     /// <summary>
@@ -236,7 +251,8 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
     private float _cd;
     private GameObject _dollAreaPrefab;
     private GameObject _dollArea;
-
+    private CapsuleCollider controller;
+    protected Animator anim;
     private float _tempAtk;
     private float _tempSpd;
     private float _tempDefense;
@@ -302,6 +318,7 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
             if (HP < 0)
             {
                 _damagedNumber++;
+                anim.SetBool("die", true);
                 LeaveDollOwnerFunction();
                 return true;
             }
@@ -475,7 +492,8 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
                 
                 break;
             default:
-
+                anim.SetTrigger("attack");
+                anim.SetBool("carry", false);
                 break;
         }
     }
@@ -494,7 +512,8 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
                 
                 break;
             default:
-
+                anim.SetBool("carry", false);
+                anim.SetTrigger("throw");
                 break;
         }
     }
@@ -531,7 +550,7 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
                 isAttack = true;
                 AttackAnim();
                 //ものをあってた場合は1秒過ぎるとhurtなし
-                StartCoroutine(Wait());
+                StartCoroutine(WaitAttack());
             }
 
             }
@@ -560,9 +579,9 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
 
     }
 
-    protected virtual IEnumerator Wait()
+    protected virtual IEnumerator WaitAttack()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
         if (item != null)
         {
             temp.GetComponent<Item>().isAttack = false;
@@ -589,7 +608,7 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
             }
 
         }
-        if (other.gameObject.tag == "DollHand")
+        if (other.gameObject.tag == "Doll")
         {
             Hurt = 5;
             isAttack = false;

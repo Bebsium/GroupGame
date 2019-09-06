@@ -110,6 +110,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: Item4
+  typeName: 
   picked: 0
   hurt: 10
   throwHurt: 10
@@ -132,7 +133,7 @@ BoxCollider:
   m_GameObject: {fileID: 3584615068548456923}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 0.5275092, z: 1}
   m_Center: {x: 0, y: 0.2362454, z: 0}
