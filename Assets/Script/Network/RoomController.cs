@@ -10,13 +10,14 @@ public class RoomController : MonoBehaviourPunCallbacks
 {
     public static RoomController instance;
 
+
     public void OnStartBtClick()
     {
         if (PhotonNetwork.IsMasterClient)
         {
             PhotonNetwork.CurrentRoom.IsOpen = false;
             
-            PhotonNetwork.LoadLevel(PhotonNetwork.CurrentRoom.CustomProperties["Type"].ToString());
+            StartCoroutine(NextScene());
         }
         else
         {
@@ -28,6 +29,14 @@ public class RoomController : MonoBehaviourPunCallbacks
         }
     }
 
+    IEnumerator NextScene(){
+        _background.gameObject.SetActive(true);
+        _loading.sprite=_loadingList[0];
+        yield return new WaitForSeconds(1);
+        _loading.sprite=_loadingList[1];
+        yield return new WaitForSeconds(1);
+        PhotonNetwork.LoadLevel(PhotonNetwork.CurrentRoom.CustomProperties["Type"].ToString());
+    }
     public void OnCancelBtClick()
     {
         //photonView.RPC("SetReady", RpcTarget.All, PhotonNetwork.LocalPlayer.UserId, false);
@@ -144,6 +153,11 @@ public class RoomController : MonoBehaviourPunCallbacks
     private int _ready = 1;
     private bool _isReady = false;
     private Coroutine _cor;
+    [SerializeField]
+    private GameObject _canvas;
+    private List<Sprite> _loadingList=new List<Sprite>();
+    private Image _background;
+    private Image _loading;
 
     [System.Serializable]
     private struct PlayerSlot
@@ -189,6 +203,14 @@ public class RoomController : MonoBehaviourPunCallbacks
         _camera = Camera.main.transform;
         _slot = new List<PlayerSlot>();
         _instance = new List<PlayerInstance>();
+
+        //Loading
+        _background=_canvas.transform.Find("Background").GetComponent<Image>();
+        _background.gameObject.SetActive(false);
+        _loading=_canvas.transform.Find("Background/Loading").GetComponent<Image>();
+        for(int i=1;i<3;i++){
+            _loadingList.Add(Resources.Load<Sprite>("UIImage/Loading/loading_"+i));
+        }
 
         Player player = PhotonNetwork.LocalPlayer;
         AddSlot(player.UserId, player.NickName, 0);

@@ -69,6 +69,7 @@ public class MenuUIManager : MonoBehaviour
     public void CharacterChangeRight()
     {
         index++;
+        _voice.Stop();
         if (index >= doll.transform.childCount) {
             index = 0; 
             dollList[doll.transform.childCount-1].SetActive(false);
@@ -83,6 +84,7 @@ public class MenuUIManager : MonoBehaviour
     public void CharacterChangeLeft()
     {
         index--;
+        _voice.Stop();
         if (index < 0) {
             index = doll.transform.childCount-1;
             
@@ -98,12 +100,16 @@ public class MenuUIManager : MonoBehaviour
         GameObject temp = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
         if(temp.name=="HatBtn"){
             _voice.clip=voiceList[0];
+            _voice.Play();
         }else if(temp.name=="CatBtn"){
             _voice.clip=voiceList[1];
+            _voice.Play();
         }else if(temp.name=="QueenBtn"){
             _voice.clip=voiceList[2];
+            _voice.Play();
         }else{
             _voice.clip=voiceList[3];
+            _voice.Play();
         }
     }
 

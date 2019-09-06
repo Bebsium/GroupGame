@@ -1889,10 +1889,10 @@ MonoBehaviour:
   canvas: {fileID: 608271629}
   doll: {fileID: 1387777800}
   voiceList:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 8300000, guid: a7967098c721df04e8e6160abae06886, type: 3}
+  - {fileID: 8300000, guid: bcfe8ba24ef69de4d815f4ef2f9cbb61, type: 3}
+  - {fileID: 8300000, guid: 6ad092dc94d9e474893d9c3a6bf2363a, type: 3}
+  - {fileID: 8300000, guid: 4b44c80839275e546a4656f8fbea9d0f, type: 3}
   window_toggle: {fileID: 7813296620539691105}
   SE_toggle: {fileID: 7813296620870951946}
   voice_toggle: {fileID: 7813296620303494401}
