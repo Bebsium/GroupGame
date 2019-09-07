@@ -142,6 +142,7 @@ public class MenuUIManager : MonoBehaviour
     public void StartGame()
     {
         Destroy(startBG.gameObject);
+        startBtn.SetActive(true);
     }
 
     public void Window()
