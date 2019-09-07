@@ -114,6 +114,7 @@ public class Doll_hat : Doll
         }
         if(Input.GetKey(KeyCode.F) && !usedSkill)
         {
+            anim.SetBool("skill", true);
             //射擊方向
             ToMouse();
         }
@@ -121,6 +122,7 @@ public class Doll_hat : Doll
         //使用道具
         if (Input.GetKeyUp(KeyCode.F) && !usedSkill)
             {
+                anim.SetBool("skill", false);
                 usedSkill = true;
                 isShoot = false;
                 CreateHat();
