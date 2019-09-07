@@ -1,14 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Global;
-using Photon.Pun;
-using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.Networking;
 
-[RequireComponent(typeof(PhotonView))]
-[RequireComponent(typeof(PhotonTransformView))]
+[RequireComponent(typeof(NetworkIdentity))]
+[RequireComponent(typeof(NetworkTransform))]
 [RequireComponent(typeof(Rigidbody))]
-public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallbacks
+public abstract class Doll : NetworkBehaviour
 {
     //----------------[Public Area]--------------------
     //item
@@ -77,33 +76,33 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
         if (Owner == "" || Owner == null)
         {
             _controller = player;
-            photonView.RPC("EnterRPC", RpcTarget.All, player.photonView.Owner.UserId);
+            _owner = player.playerId;
             player.PlayerAction = Action;
-            photonView.TransferOwnership(player.photonView.Owner);
+            //photonView.TransferOwnership(player.photonView.Owner);
             return true;
         }
         return false;
     }
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (Owner == null || Owner == "")
-            return;
-        if (stream.IsWriting)
-        {
-            stream.SendNext(_hp);
-            stream.SendNext(_atk);
-            stream.SendNext(_spd);
-            stream.SendNext(_defense);
-        }
-        else if (stream.IsReading)
-        {
-            this._hp = (float)stream.ReceiveNext();
-            this._atk = (float)stream.ReceiveNext();
-            this._spd = (float)stream.ReceiveNext();
-            this._defense = (float)stream.ReceiveNext();
-        }
-    }
+    //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    //{
+    //    if (Owner == null || Owner == "")
+    //        return;
+    //    if (stream.IsWriting)
+    //    {
+    //        stream.SendNext(_hp);
+    //        stream.SendNext(_atk);
+    //        stream.SendNext(_spd);
+    //        stream.SendNext(_defense);
+    //    }
+    //    else if (stream.IsReading)
+    //    {
+    //        this._hp = (float)stream.ReceiveNext();
+    //        this._atk = (float)stream.ReceiveNext();
+    //        this._spd = (float)stream.ReceiveNext();
+    //        this._defense = (float)stream.ReceiveNext();
+    //    }
+    //}
 
     //拾取物件，子类必须实现
     public abstract bool PickItem(string name);
@@ -216,20 +215,31 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
 
     #region Private
     [SerializeField]
+    [SyncVar]
     private string _owner;
     private Controller _controller;
     private Rigidbody _rigi;
+    [SyncVar]
     private float _mHp;
+    [SyncVar]
     private float _mAtk;
+    [SyncVar]
     private float _mSpd;
     [SerializeField]
+    [SyncVar]
     private float _hp;
+    [SyncVar]
     private float _atk;
+    [SyncVar]
     private float _spd;
+    [SyncVar]
     private float _defense;
+    [SyncVar]
     private int _damagedNumber;
+    [SyncVar]
     private float _mCd;
     [SerializeField]
+    [SyncVar]
     private float _cd;
     private GameObject _dollAreaPrefab;
     private GameObject _dollArea;
@@ -248,7 +258,7 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
     /// <returns></returns>
     private Vector3 Action()
     {
-        if(Owner != PhotonNetwork.LocalPlayer.UserId)
+        if (Owner != playerControllerId.ToString())
         {
             return transform.position;
         }
@@ -284,9 +294,13 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
         transform.tag = "Untagged";
         _controller.PlayerAction -= Action;
         _controller.hasDoll = false;
-        photonView.TransferOwnership(0);
+        //otonView.TransferOwnership(0);
         _controller.LeaveDoll();
-        photonView.RPC("LeaveRPC", RpcTarget.All, _damagedNumber);
+        //photonView.RPC("LeaveRPC", RpcTarget.All, _damagedNumber);
+
+        _owner = null;
+        ReInit();
+        _cd = _mCd;
     }
 
     /// <summary>
@@ -354,10 +368,10 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
             _dollArea.SetActive(true);
             return;
         }
-        else if (Owner != PhotonNetwork.LocalPlayer.UserId)
+        else if (Owner != playerControllerId.ToString())
         {
             GuiAction?.Invoke(new DollComm(DollCDType.HPBar, _hp / _mHp));
-            transform.SendMessage("NickName", photonView.Owner.NickName);
+            //transform.SendMessage("NickName", photonView.Owner.NickName);
         }
         _dollArea.SetActive(false);
     }
@@ -398,40 +412,33 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
         _attrPromoted = false;
     }
 
-    [PunRPC]
-    public void EnterRPC(string con)
-    {
-        _owner = con;
-    }
+    //public void LeaveRPC(int n)
+    //{
+    //    _owner = null;
+    //    _damagedNumber = n;
+    //    ReInit();
+    //    _cd = _mCd;
+    //}
 
-    [PunRPC]
-    public void LeaveRPC(int n)
-    {
-        _owner = null;
-        _damagedNumber = n;
-        ReInit();
-        _cd = _mCd;
-    }
-
-    public void OnOwnershipRequest(PhotonView targetView, Player requestingPlayer)
-    {
+    //public void OnOwnershipRequest(PhotonView targetView, Player requestingPlayer)
+    //{
         
-    }
+    //}
 
-    public void OnOwnershipTransfered(PhotonView targetView, Player previousOwner)
-    {
-        //if (targetView.IsSceneView)
-        //{
-        //    SendMessage("NickName", "");
-        //}
-        //else if (targetView.IsOwnerActive) 
-        //{
-        //    if (!photonView.IsMine)
-        //    {
-        //        SendMessage("NickName", targetView.Owner.NickName);
-        //    }
-        //}
-    }
+    //public void OnOwnershipTransfered(PhotonView targetView, Player previousOwner)
+    //{
+    //    //if (targetView.IsSceneView)
+    //    //{
+    //    //    SendMessage("NickName", "");
+    //    //}
+    //    //else if (targetView.IsOwnerActive) 
+    //    //{
+    //    //    if (!photonView.IsMine)
+    //    //    {
+    //    //        SendMessage("NickName", targetView.Owner.NickName);
+    //    //    }
+    //    //}
+    //}
 
     //Item
     protected virtual void ItemType(string name)

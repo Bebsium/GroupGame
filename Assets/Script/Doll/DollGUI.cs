@@ -1,13 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Photon.Pun;
 using Global;
 using UnityEngine;
 using UnityEngine.UI;
-using Photon.Realtime;
 
 [RequireComponent(typeof(Doll))]
-public class DollGUI : MonoBehaviourPunCallbacks //,IPunOwnershipCallbacks
+public class DollGUI : MonoBehaviour //,IPunOwnershipCallbacks
 {
     public void NickName(string name)
     {

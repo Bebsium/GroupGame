@@ -1,30 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Photon.Pun;
 using Global;
 using UnityEngine;
+using UnityEngine.Networking;
 
-[RequireComponent(typeof(PhotonView))]
-[RequireComponent(typeof(PhotonTransformView))]
+[RequireComponent(typeof(NetworkIdentity))]
+[RequireComponent(typeof(NetworkTransform))]
 [RequireComponent(typeof(Rigidbody))]
-public abstract class Controller : MonoBehaviourPun,IPunObservable
+public abstract class Controller : NetworkBehaviour
 {
     //----------------[Public Area]--------------------
-    public string playerName;
+    public string playerId;
     [HideInInspector]
     public bool hasDoll = false;
-
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            stream.SendNext(_isVisible);
-        }
-        else
-        {
-            this._isVisible = (bool)stream.ReceiveNext();
-        }
-    }
 
     public void LeaveDoll()
     {
@@ -41,12 +29,15 @@ public abstract class Controller : MonoBehaviourPun,IPunObservable
     protected virtual void Start()
     {
         gameObject.layer = LayerMask.NameToLayer("Player");
+        playerId = playerControllerId.ToString();
         _rigi = GetComponent<Rigidbody>();
         _coll = GetComponent<Collider>();
         _render = GetComponent<Renderer>();
-        _pv = GetComponent<PhotonView>();
         _particleRenderer = transform.Find("Renderer").gameObject;
         hasDoll = false;
+
+        if(isLocalPlayer)
+            CameraFollow.instance.CameraFollowObj = gameObject;
     }
 
     /// <summary>
@@ -75,8 +66,6 @@ public abstract class Controller : MonoBehaviourPun,IPunObservable
     private Rigidbody _rigi;
     private Collider _coll;
     private Renderer _render;
-    [SerializeField]
-    private PhotonView _pv;
     private Vector3 _animateTarget;
     private bool _animateEnd = false;
     private bool _isVisible { set {
@@ -91,7 +80,7 @@ public abstract class Controller : MonoBehaviourPun,IPunObservable
 
     private void Update()
     {
-        if (!_pv.IsMine)
+        if (!isLocalPlayer)
             return;
         if (PlayerAction != null)
         {
