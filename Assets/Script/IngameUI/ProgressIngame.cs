@@ -10,8 +10,8 @@ public class ProgressIngame : MonoBehaviour
 
     GameObject hourHand, endImage,//时针和结束画面
                icon, iconEnemy,
-               skill, skillEnemy;
-               
+               skill, skillEnemy,
+               HPPlayer, HPEnemy;
                
     GameObject[] buffs, buffBackgrounds;
     Vector3[] buffpositions;
@@ -30,7 +30,7 @@ public class ProgressIngame : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha9))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             for (int i = 0; i < 3; i++)
             {
@@ -41,7 +41,7 @@ public class ProgressIngame : MonoBehaviour
                 }
             }
         }
-        if (Input.GetKeyDown(KeyCode.Alpha0))
+        if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             for (int i = 3; i < 6; i++)
             {
@@ -52,19 +52,36 @@ public class ProgressIngame : MonoBehaviour
                 }
             }
         }
-        if (Input.GetKeyDown(KeyCode.Alpha7))
+
+        if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             int r = Random.Range(0, 4);
             icon.GetComponent<Image>().sprite = playerSprites[r];
             skill.GetComponent<Image>().sprite = skillSprites[r];
+            skill.GetComponent<CanvasGroup>().alpha = 1;
+            skill.GetComponent<CanvasGroup>().interactable = true;
+            skill.GetComponent<CanvasGroup>().blocksRaycasts = true;
         }
-        if (Input.GetKeyDown(KeyCode.Alpha8))
+        if (Input.GetKeyDown(KeyCode.Alpha4))
         {
             int r = Random.Range(0, 4);
             iconEnemy.GetComponent<Image>().sprite = playerSprites[r];
             skillEnemy.GetComponent<Image>().sprite = skillSprites[r];
+            skillEnemy.GetComponent<CanvasGroup>().alpha = 1;
+            skillEnemy.GetComponent<CanvasGroup>().interactable = true;
+            skillEnemy.GetComponent<CanvasGroup>().blocksRaycasts = true;
         }
 
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            PlayerHP -= 5f;
+            HPPlayer.GetComponent<Slider>().value = PlayerHP / 100f;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha6))
+        {
+            EnemyHP -= 5f;
+            HPEnemy.GetComponent<Slider>().value = EnemyHP / 100f;
+        }
         BuffProgress();
         EndCheck();
     }
@@ -80,10 +97,25 @@ public class ProgressIngame : MonoBehaviour
         icon = GameObject.Find("Icon");
         iconEnemy = GameObject.Find("IconEnemy");
         skill = GameObject.Find("Skill");
+        skill.GetComponent<CanvasGroup>().alpha = 0;
+        skill.GetComponent<CanvasGroup>().interactable = false;
+        skill.GetComponent<CanvasGroup>().blocksRaycasts = false;
         skillEnemy = GameObject.Find("SkillEnemy");
+        skillEnemy.GetComponent<CanvasGroup>().alpha = 0;
+        skillEnemy.GetComponent<CanvasGroup>().interactable = false;
+        skillEnemy.GetComponent<CanvasGroup>().blocksRaycasts = false;
+
+        PlayerHP = EnemyHP = 100f;
+        HPPlayer = GameObject.Find("HP");
+        HPPlayer.GetComponent<Slider>().value = PlayerHP / 100f;
+        HPEnemy = GameObject.Find("HPEnemy");
+        HPEnemy.GetComponent<Slider>().value = EnemyHP / 100f;
 
         spirit = Resources.Load<Sprite>("UIImage/IngameUI/spirit");
+        icon.GetComponent<Image>().sprite = spirit;
         spiritEnemy = Resources.Load<Sprite>("UIImage/IngameUI/spiritEnemy");
+        iconEnemy.GetComponent<Image>().sprite = spiritEnemy;
+
         playerSprites = new Sprite[4]
         {
             Resources.Load<Sprite>("UIImage/IngameUI/1"),
@@ -119,9 +151,9 @@ public class ProgressIngame : MonoBehaviour
             new Vector3(95, -45, 0),
             new Vector3(50, -45, 0),
 
-            new Vector3(50, -45, 0),
-            new Vector3(95, -45, 0),
             new Vector3(140, -45, 0),
+            new Vector3(95, -45, 0),
+            new Vector3(50, -45, 0),
         };
         buffs = new GameObject[6];
         buffBackgrounds = new GameObject[6];
@@ -175,8 +207,8 @@ public class ProgressIngame : MonoBehaviour
         }
         else
         {
-            //剩余血量多的一方获胜
-            endImage.GetComponent<Image>().sprite = success;
+            if(PlayerHP>=EnemyHP)endImage.GetComponent<Image>().sprite = success;
+            else endImage.GetComponent<Image>().sprite = fault;
             endImage.GetComponent<CanvasGroup>().alpha = 1;
             endImage.GetComponent<CanvasGroup>().interactable = true;
             endImage.GetComponent<CanvasGroup>().blocksRaycasts = true;
