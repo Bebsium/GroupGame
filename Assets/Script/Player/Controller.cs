@@ -7,16 +7,23 @@ using UnityEngine.Networking;
 [RequireComponent(typeof(NetworkIdentity))]
 [RequireComponent(typeof(NetworkTransform))]
 [RequireComponent(typeof(Rigidbody))]
-public abstract class Controller : NetworkBehaviour
+public class Controller : NetworkBehaviour
 {
     //----------------[Public Area]--------------------
-    public string playerId;
+    [SyncVar]
+    public string playerUniqueIdentity;
     [HideInInspector]
     public bool hasDoll = false;
 
     public void LeaveDoll()
     {
         _isVisible = true;
+    }
+
+    public override void OnStartLocalPlayer()
+    {
+        GetNetIdentity();
+        SetIdentity();
     }
 
     //----------------[Protected Area]-----------------
@@ -29,10 +36,11 @@ public abstract class Controller : NetworkBehaviour
     protected virtual void Start()
     {
         gameObject.layer = LayerMask.NameToLayer("Player");
-        playerId = playerControllerId.ToString();
+        //playerUniqueIdentity = GetComponent<NetworkIdentity>().netId;
+        //playerId = playerControllerId.ToString();
         _rigi = GetComponent<Rigidbody>();
         _coll = GetComponent<Collider>();
-        _render = GetComponent<Renderer>();
+        //_render = GetComponent<Renderer>();
         _particleRenderer = transform.Find("Renderer").gameObject;
         hasDoll = false;
 
@@ -59,24 +67,28 @@ public abstract class Controller : NetworkBehaviour
     /// <summary>
     /// 相当于Update
     /// </summary>
-    protected abstract void Loop();
+    protected virtual void Loop()
+    {
+
+    }
 
     #region Private
 
     private Rigidbody _rigi;
     private Collider _coll;
-    private Renderer _render;
+    //private Renderer _render;
     private Vector3 _animateTarget;
     private bool _animateEnd = false;
     private bool _isVisible { set {
             _rigi.isKinematic = !value;
             _coll.enabled = value;
-            _render.enabled = value;
+            //_render.enabled = value;
             _particleRenderer.SetActive(value);
-        } get { return _render.enabled; } }
+        } get { return _coll.enabled; } }
     private bool _entering = false;
     private Coroutine _enterCor = null;
     private GameObject _particleRenderer;
+    private NetworkInstanceId playerNetID;
 
     private void Update()
     {
@@ -96,6 +108,38 @@ public abstract class Controller : NetworkBehaviour
                 Loop();
             }
         }
+    }
+
+    [Client]
+    private void GetNetIdentity()
+    {
+        playerNetID = GetComponent<NetworkIdentity>().netId;
+        CmdTellServerMyIdentity(MakeUniqueIdentity());
+    }
+
+    private void SetIdentity()
+    {
+        if (!isLocalPlayer)
+        {
+            transform.name = playerUniqueIdentity;
+        }
+        else
+        {
+            transform.name = MakeUniqueIdentity();
+        }
+    }
+
+    private string MakeUniqueIdentity()
+    {
+        string uniqueName = "Player" + playerNetID.ToString();
+        PlayerPrefs.SetString("LocalUnique", uniqueName);
+        return uniqueName;
+    }
+
+    [Command]
+    private void CmdTellServerMyIdentity(string name)
+    {
+        playerUniqueIdentity = name;
     }
 
     private void Enter()
@@ -118,9 +162,26 @@ public abstract class Controller : NetworkBehaviour
             transform.position = Vector3.Lerp(transform.position, obj.position, 0.1f);
         }
         _isVisible = false;
-        obj.GetComponent<Doll>().EnterCheck(this);
+        obj.GetComponent<Doll>().CmdEnterCheck(gameObject);
+        CmdSetAuth(obj.gameObject);
         _enterCor = null;
     }
+
+    public NetworkIdentity networkIdentity;
+
+    [Command]
+    private void CmdSetAuth(GameObject obj)
+    {
+        networkIdentity = obj.GetComponent<NetworkIdentity>();
+
+        NetworkConnection otherOwner = networkIdentity.clientAuthorityOwner;
+        print("Owner: " + connectionToClient.connectionId);
+        if (otherOwner != null)
+            networkIdentity.RemoveClientAuthority(otherOwner);
+        networkIdentity.localPlayerAuthority = true;
+        networkIdentity.AssignClientAuthority(connectionToClient);
+    }
+    
 
     public ActionDelegate PlayerAction;
     #endregion

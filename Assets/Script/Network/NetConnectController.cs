@@ -8,9 +8,16 @@ using UnityEngine.Networking;
 public class NetConnectController : NetworkManager
 {
     public static NetConnectController instance;
-
+    public NetworkClient localClient;
+    public NetworkConnection connection;
     GameObject loadingPrefab;
     Loading loading;
+
+    public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
+    {
+        base.OnServerAddPlayer(conn, playerControllerId);
+        connection = conn;
+    }
 
     public override void OnStopServer()
     {
@@ -26,7 +33,6 @@ public class NetConnectController : NetworkManager
         if (instance != null)
             Destroy(instance.gameObject);
         instance = this;
-
         loadingPrefab = Resources.Load<GameObject>("Prefab/UI/Loading");
         loading = Instantiate(loadingPrefab, GameObject.Find("Canvas").transform).GetComponent<Loading>();
 
@@ -74,7 +80,7 @@ public class NetConnectController : NetworkManager
             {
                 if (numPlayers > 1)
                 {
-                    discovery.StopBroadcast();
+                    //discovery.StopBroadcast();
                     loading.run = false;
                     start = true;
                 }
@@ -85,12 +91,14 @@ public class NetConnectController : NetworkManager
                 loading.run = false;
                 start = true;
             }
+            localClient = client;
         }
         SpawnPlayer();
     }
 
     private void SpawnPlayer()
     {
-        
+        localClient = client;
+        print("-----------------------"+localClient.connection.connectionId);
     }
 }

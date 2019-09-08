@@ -69,19 +69,51 @@ public abstract class Doll : NetworkBehaviour
 
     public bool CanEnter { get { if (_cd > 0f) return false; else return true; } }
 
-    public bool EnterCheck(Controller player)
+    //[Command]
+    //public bool CmdEnterCheck(Controller player)
+    //{
+    //    if (_cd > 0f)
+    //        return false;
+    //    if (Owner == "" || Owner == null)
+    //    {
+    //        _controller = player;
+    //        _owner = player.playerUniqueIdentity;
+    //        player.PlayerAction = Action;
+    //        print("aaaa");
+
+    //        //GetComponent<NetworkIdentity>().AssignClientAuthority(NetConnectController.instance.connection);
+    //        //photonView.TransferOwnership(player.photonView.Owner);
+    //        return true;
+    //    }
+    //    return false;
+    //}
+
+    [Command]
+    public void CmdEnterCheck(GameObject player)
     {
         if (_cd > 0f)
-            return false;
+            return;
         if (Owner == "" || Owner == null)
         {
-            _controller = player;
-            _owner = player.playerId;
-            player.PlayerAction = Action;
+            
+            RpcDollChangeState(player);
+            //_controller = player.GetComponent<Controller>();
+            //_owner = _controller.playerUniqueIdentity;
+            //_controller.PlayerAction = Action;
+            //print("aaaa");
+
+            //GetComponent<NetworkIdentity>().AssignClientAuthority(NetConnectController.instance.connection);
             //photonView.TransferOwnership(player.photonView.Owner);
-            return true;
         }
-        return false;
+    }
+
+    [ClientRpc]
+    private void RpcDollChangeState(GameObject player)
+    {
+        _controller = player.GetComponent<Controller>();
+        _owner = _controller.playerUniqueIdentity;
+        _controller.PlayerAction = Action;
+        print("aaaa");
     }
 
     //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -191,7 +223,32 @@ public abstract class Doll : NetworkBehaviour
     protected virtual void Move()
     {
         transform.SampleMove(SPD);
+
+        //float h = 0, v = 0;
+        //KeyInput(ref h, ref v);
+        //if (h != 0 || v != 0)
+        //{
+        //    Vector3 direction = new Vector3(h, 0, v).normalized;
+        //    float y = Camera.main.transform.rotation.eulerAngles.y;
+        //    direction = Quaternion.Euler(0, y, 0) * direction;
+        //    Vector3 target = Vector3.Lerp(self.forward, direction, 0.2f);
+        //    self.LookAt(self.position + target);
+        //    if (Vector3.Dot(direction, target) > 0)
+        //    {
+        //        self.Translate(target * Time.deltaTime * (spd == 0 ? Parameter.MaxSPD : spd), Space.World);
+        //    }
+        //    else
+        //    {
+        //        self.Translate(target * Time.deltaTime * (spd == 0 ? Parameter.MaxSPD : spd) * 0.1f, Space.World);
+        //    }
+        //}
     }
+
+    //[Command]
+    //private void CmdMove()
+    //{
+
+    //}
 
     /// <summary>
     /// 人偶基础跳跃
@@ -258,23 +315,25 @@ public abstract class Doll : NetworkBehaviour
     /// <returns></returns>
     private Vector3 Action()
     {
-        if (Owner != playerControllerId.ToString())
-        {
-            return transform.position;
-        }
-            
-        if (!Damaged)
-        {
-            BuffCountDown();
-            Loop();
-            Move();
-            Jump();
-            LeaveDoll();
-        }
-        else
-        {
-            LeaveDollOwnerFunction();
-        }
+        ////if (Owner != playerControllerId.ToString())
+        //if (Owner != PlayerPrefs.GetString("LocalUnique"))
+        //{
+        //    return transform.position;
+        //}
+
+        //if (!Damaged)
+        //{
+        //    BuffCountDown();
+        //    Loop();
+        //    Move();
+        //    Jump();
+        //    LeaveDoll();
+        //}
+        //else
+        //{
+        //    LeaveDollOwnerFunction();
+        //}
+        //return transform.position;
         return transform.position;
     }
 
@@ -295,6 +354,7 @@ public abstract class Doll : NetworkBehaviour
         _controller.PlayerAction -= Action;
         _controller.hasDoll = false;
         //otonView.TransferOwnership(0);
+        //GetComponent<NetworkIdentity>().localPlayerAuthority = false;
         _controller.LeaveDoll();
         //photonView.RPC("LeaveRPC", RpcTarget.All, _damagedNumber);
 
@@ -345,11 +405,41 @@ public abstract class Doll : NetworkBehaviour
         _spd = _mSpd;
     }
 
+    [Command]
+    private void CmdTest()
+    {
+        {
+            transform.position += Vector3.right * Time.deltaTime;
+        }
+    }
+
+    private void Control()
+    {
+        if (Owner != PlayerPrefs.GetString("LocalUnique"))
+        {
+            return;
+        }
+
+        if (!Damaged)
+        {
+            BuffCountDown();
+            Loop();
+            Move();
+            Jump();
+            LeaveDoll();
+        }
+        else
+        {
+            LeaveDollOwnerFunction();
+        }
+    }
+
     /// <summary>
     /// 人偶可进入冷却时间计算
     /// </summary>
     private void Update()
     {
+        Control();
         if(_damagedNumber > Parameter.CanDestroyNum)
         {
             _dollArea.SetActive(false);
@@ -368,7 +458,7 @@ public abstract class Doll : NetworkBehaviour
             _dollArea.SetActive(true);
             return;
         }
-        else if (Owner != playerControllerId.ToString())
+        else if (Owner != PlayerPrefs.GetString("LocalUnique"))
         {
             GuiAction?.Invoke(new DollComm(DollCDType.HPBar, _hp / _mHp));
             //transform.SendMessage("NickName", photonView.Owner.NickName);

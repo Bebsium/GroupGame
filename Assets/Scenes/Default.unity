@@ -655,6 +655,9 @@ GameObject:
   - component: {fileID: 217959452}
   - component: {fileID: 217959451}
   - component: {fileID: 217959450}
+  - component: {fileID: 217959454}
+  - component: {fileID: 217959455}
+  - component: {fileID: 217959457}
   m_Layer: 0
   m_Name: Doll3
   m_TagString: Untagged
@@ -736,6 +739,51 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 217959449}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &217959454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 217959449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneId:
+    m_Value: 0
+  m_AssetId:
+    i0: 0
+    i1: 0
+    i2: 0
+    i3: 0
+    i4: 0
+    i5: 0
+    i6: 0
+    i7: 0
+    i8: 0
+    i9: 0
+    i10: 0
+    i11: 0
+    i12: 0
+    i13: 0
+    i14: 0
+    i15: 0
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 0
+--- !u!114 &217959455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 217959449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7284b5e957144b84d80700e6466526f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &217959456
 Transform:
   m_ObjectHideFlags: 0
@@ -750,6 +798,28 @@ Transform:
   m_Father: {fileID: 2100938623}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &217959457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 217959449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1768714887, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_TransformSyncMode: 3
+  m_SendInterval: 0.033333335
+  m_SyncRotationAxis: 7
+  m_RotationSyncCompression: 0
+  m_SyncSpin: 0
+  m_MovementTheshold: 0.001
+  m_VelocityThreshold: 0.0001
+  m_SnapThreshold: 5
+  m_InterpolateRotation: 1
+  m_InterpolateMovement: 1
 --- !u!1 &258876890
 GameObject:
   m_ObjectHideFlags: 0
@@ -1407,9 +1477,9 @@ MonoBehaviour:
   autoRotation: 0
   autoRotationSpeed: 0.1
   canRotation: 0
-  minDistance: 15
-  maxDistance: 40
-  zoomFactor: 1
+  minDistance: 5
+  maxDistance: 20
+  zoomFactor: 1.5
 --- !u!114 &692396450
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1739,7 +1809,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b63b4159813a2b4badc8a4fb7da5610, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: Red Sphere Item
+  itemName: 
   picked: 0
   hurt: 10
   throwHurt: 10
@@ -2133,11 +2203,11 @@ MonoBehaviour:
   m_Script: {fileID: 1980459831, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
-  m_ScreenMatchMode: 0
+  m_ReferenceResolution: {x: 800, y: 450}
+  m_ScreenMatchMode: 1
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
@@ -2963,7 +3033,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b63b4159813a2b4badc8a4fb7da5610, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: Red Sphere Item
+  itemName: 
   picked: 0
   hurt: 10
   throwHurt: 10
@@ -3257,7 +3327,7 @@ MonoBehaviour:
   m_BroadcastKey: 2222
   m_BroadcastVersion: 1
   m_BroadcastSubVersion: 1
-  m_BroadcastInterval: 500
+  m_BroadcastInterval: 1000
   m_UseNetworkManager: 0
   m_BroadcastData: HELLO
   m_ShowGUI: 0
@@ -3279,14 +3349,14 @@ MonoBehaviour:
   m_ServerBindToIP: 0
   m_ServerBindAddress: 
   m_NetworkAddress: localhost
-  m_DontDestroyOnLoad: 1
+  m_DontDestroyOnLoad: 0
   m_RunInBackground: 1
   m_ScriptCRCCheck: 1
   m_MaxDelay: 0.01
   m_LogLevel: 2
   m_PlayerPrefab: {fileID: 11, guid: d06a438dc50d4e4418ea4f700ccaf9d5, type: 3}
   m_AutoCreatePlayer: 1
-  m_PlayerSpawnMethod: 1
+  m_PlayerSpawnMethod: 0
   m_OfflineScene: 
   m_OnlineScene: 
   m_SpawnPrefabs: []
@@ -3379,7 +3449,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b63b4159813a2b4badc8a4fb7da5610, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: Red Sphere Item
+  itemName: 
   picked: 0
   hurt: 10
   throwHurt: 10
@@ -3821,6 +3891,8 @@ GameObject:
   - component: {fileID: 1862804462}
   - component: {fileID: 1862804461}
   - component: {fileID: 1862804460}
+  - component: {fileID: 1862804467}
+  - component: {fileID: 1862804468}
   m_Layer: 0
   m_Name: Doll4
   m_TagString: Untagged
@@ -3988,7 +4060,7 @@ MonoBehaviour:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
-  line: {fileID: 2100000, guid: f72e1ea5f0483344b82fef47b7786ee4, type: 2}
+  line: {fileID: 0}
   line_hight: 10
   _owner: 
   _hp: 0
@@ -4008,6 +4080,61 @@ Transform:
   m_Father: {fileID: 2100938623}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1862804467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1862804459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneId:
+    m_Value: 0
+  m_AssetId:
+    i0: 0
+    i1: 0
+    i2: 0
+    i3: 0
+    i4: 0
+    i5: 0
+    i6: 0
+    i7: 0
+    i8: 0
+    i9: 0
+    i10: 0
+    i11: 0
+    i12: 0
+    i13: 0
+    i14: 0
+    i15: 0
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 1
+--- !u!114 &1862804468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1862804459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1768714887, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_TransformSyncMode: 3
+  m_SendInterval: 0.033333335
+  m_SyncRotationAxis: 7
+  m_RotationSyncCompression: 0
+  m_SyncSpin: 0
+  m_MovementTheshold: 0.001
+  m_VelocityThreshold: 0.0001
+  m_SnapThreshold: 5
+  m_InterpolateRotation: 1
+  m_InterpolateMovement: 1
 --- !u!1 &1900608153
 GameObject:
   m_ObjectHideFlags: 0
@@ -4718,12 +4845,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b63b4159813a2b4badc8a4fb7da5610, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: Item4
+  itemName: 
   picked: 0
   hurt: 10
   throwHurt: 10
   knockout: 10
-  durability: 10
+  durability: 2
   explosion: 0
   unUsed: {fileID: 0}
   used: {fileID: 0}
