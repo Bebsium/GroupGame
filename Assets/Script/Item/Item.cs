@@ -43,7 +43,11 @@ public class Item : MonoBehaviour
         if (!picked)
         {
             //remove itemArea
+            
             itemClone = Instantiate(itemAreaPrefab, transform);
+            if(typeName=="BoardHeavy"){
+                itemClone.transform.localScale=itemAreaPrefab.transform.localScale*10;
+            }
         }
 
         //Find Collider
