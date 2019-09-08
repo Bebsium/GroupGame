@@ -25,6 +25,8 @@ public class Item : MonoBehaviour
     private Color colTemp;
 
     public Transform player;
+    private Rigidbody _rigidbody;
+    public bool istouch;
     public bool item;
     int movepoint;
     public Vector3[] itemMove;
@@ -35,12 +37,13 @@ public class Item : MonoBehaviour
         gameObject.layer = LayerMask.NameToLayer("Item");
         transform.tag = "Item";
         itemAreaPrefab = Resources.Load<GameObject>("Prefab/Item/ItemArea");
+        _rigidbody=GetComponent<Rigidbody>();
         player = gameObject.transform.parent;
+        istouch=false;
         if (!picked)
         {
             //remove itemArea
             itemClone = Instantiate(itemAreaPrefab, transform);
-
         }
 
         //Find Collider
@@ -59,6 +62,7 @@ public class Item : MonoBehaviour
     {
         if (picked)
         {
+            _rigidbody.isKinematic=true;
             StartCoroutine(PickedChange());
         }
 
@@ -78,18 +82,21 @@ public class Item : MonoBehaviour
             //throw
             if (Input.GetMouseButtonDown(1))
             {
-                
+                _rigidbody.isKinematic = true;
                 used.enabled=true;
-                gameObject.GetComponent<Rigidbody>().isKinematic = true;
-                
             }
-            if(Input.GetMouseButtonUp(1) && !isThrow){
-                
+            if(Input.GetMouseButtonUp(1)){
                 isThrow =true;
-
+                _rigidbody.isKinematic = false;
+                unUsed.gameObject.SetActive(true);
+                used.enabled=false;
             }
-            if(isThrow){
+            if(isThrow && !istouch){
                 StartCoroutine(Move());
+            }else if(istouch){
+                isThrow = false;
+                //istouch=false;
+                //itemClone = Instantiate(itemAreaPrefab, transform);
             }
             
         }
@@ -116,20 +123,12 @@ public class Item : MonoBehaviour
         if (movepoint <= itemMove.Length - 1)
         {
             transform.position = Vector3.MoveTowards(transform.position, itemMove[movepoint], speed * Time.deltaTime);
-
             if (transform.position == itemMove[movepoint])
             {
                 movepoint++;
             }
         }
-        if (movepoint == itemMove.Length - 1)
-        {
-            isThrow = false;
-            itemClone = Instantiate(itemAreaPrefab, transform);
-            unUsed.gameObject.SetActive(true);
-            gameObject.GetComponent<Rigidbody>().isKinematic = false;
-            used.enabled = false;
-        }
+
     }
 
     IEnumerator PickedChange()
@@ -144,7 +143,6 @@ public class Item : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-
         if (other.gameObject.tag == "Doll")
         {
             //get item
@@ -165,6 +163,16 @@ public class Item : MonoBehaviour
         if (other.transform != player)
         {
             isAttack = false;
+        }
+    }
+
+    Transform target;
+    private void OnCollisionStay(Collision collision)
+    {
+        if(collision.gameObject != player.gameObject)
+        {
+            istouch = true;
+            isThrow=false;
         }
     }
     //-----------------------------------

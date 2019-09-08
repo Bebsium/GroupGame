@@ -13,7 +13,7 @@ public class Item_hat : MonoBehaviour
 
     float skillAttack = 20;
 
-    public bool istouch;
+    private bool istouch;
     private Rigidbody _rigidbody;
     private Doll_hat hatDoll;
     // Start is called before the first frame update
@@ -52,9 +52,9 @@ public class Item_hat : MonoBehaviour
             }
         }
         //順移
-        if (Input.GetKeyDown(KeyCode.Y))
+        if (Input.GetKeyDown(KeyCode.F))
         {
-            return true;
+            return false;
         }
         return false;
     }
@@ -76,6 +76,7 @@ public class Item_hat : MonoBehaviour
                     {
                         //wear
                         isWear = true;
+                        _rigidbody.isKinematic=true;
                     }
                 }
                 istouch = true;

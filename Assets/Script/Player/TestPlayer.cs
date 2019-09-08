@@ -20,6 +20,7 @@ public class TestPlayer : Controller
     {
         base.Start();
         Rigi.freezeRotation = true;
+
     }
 
     protected override void Loop()

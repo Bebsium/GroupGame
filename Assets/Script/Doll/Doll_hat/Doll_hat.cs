@@ -6,6 +6,7 @@ using Global;
 public class Doll_hat : Doll
 {
 
+    bool ishat;
     public override bool PickItem(string name,string type,int durability)
     {
         //print(Owner.playerName + " picked " + name);
@@ -97,12 +98,13 @@ public class Doll_hat : Doll
 
     void Skill()
     {
-        if (usedSkill)
+        if (ishat)
         {
             //cool down
             time += Time.deltaTime; 
-            if (time >= 3.0f && !isShoot)
+            if (time >= 3.0f)
             {
+                ishat = false;
                 usedSkill = false;
                 time = 0;
             }
@@ -112,7 +114,7 @@ public class Doll_hat : Doll
         if(!Input.GetKey(KeyCode.F)){
             shootRange.SetActive(false);
         }
-        if(Input.GetKey(KeyCode.F))
+        if(Input.GetKey(KeyCode.F) && !ishat)
         {
             if(!usedSkill){
                 _hatCone = Instantiate(hat, gameObject.transform);
@@ -126,24 +128,23 @@ public class Doll_hat : Doll
         }
         
         //使用道具
-        if (Input.GetKeyUp(KeyCode.F) && usedSkill)
+        if (Input.GetKeyUp(KeyCode.F) && usedSkill && !ishat)
             {
                 anim.SetBool("skill", false);
-                usedSkill = false;
+                //usedSkill = false;
                 isShoot = false;
+                ishat=true;
                 CreateHat();
             }
 
 
         //順移
-        if (Input.GetKeyDown(KeyCode.Y))
+        if (Input.GetKeyDown(KeyCode.F) && ishat)
         {
             if (_hatCone != null)
             {
                 StartCoroutine(UseSkill());
             }
-            
-
         }
     }
 

@@ -14,6 +14,9 @@ public abstract class Controller : MonoBehaviourPun,IPunObservable
     [HideInInspector]
     public bool hasDoll = false;
 
+    //BGM
+    public List<AudioClip> BGM;
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
@@ -34,6 +37,7 @@ public abstract class Controller : MonoBehaviourPun,IPunObservable
     //----------------[Protected Area]-----------------
 
     protected Rigidbody Rigi { get { return _rigi; } }
+    public AudioSource Rource{get {return _source;}}
 
     /// <summary>
     /// 初始化
@@ -45,6 +49,7 @@ public abstract class Controller : MonoBehaviourPun,IPunObservable
         _coll = GetComponent<Collider>();
         _render = GetComponent<Renderer>();
         _pv = GetComponent<PhotonView>();
+        _source=GetComponent<AudioSource>();
         _particleRenderer = transform.Find("Renderer").gameObject;
         hasDoll = false;
     }
@@ -71,6 +76,8 @@ public abstract class Controller : MonoBehaviourPun,IPunObservable
     protected abstract void Loop();
 
     #region Private
+    private AudioSource _source;
+    
 
     private Rigidbody _rigi;
     private Collider _coll;
@@ -134,6 +141,9 @@ public abstract class Controller : MonoBehaviourPun,IPunObservable
         }
         _isVisible = false;
         obj.GetComponent<Doll>().EnterCheck(this);
+        //print(obj.gameObject.GetComponent<PhotonView>().ViewID);
+        _source.clip=BGM[obj.gameObject.GetComponent<PhotonView>().ViewID];
+        _source.Play();
         _enterCor = null;
     }
 

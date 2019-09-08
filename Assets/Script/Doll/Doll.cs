@@ -78,6 +78,7 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
         {
             _controller = player;
             photonView.RPC("EnterRPC", RpcTarget.All, player.photonView.Owner.UserId);
+            //print(player.photonView.Owner.ActorNumber);
             player.PlayerAction = Action;
             photonView.TransferOwnership(player.photonView.Owner);
             return true;
@@ -307,6 +308,9 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
         _controller.hasDoll = false;
         photonView.TransferOwnership(0);
         _controller.LeaveDoll();
+        //BGM
+        _controller.Rource.clip=_controller.BGM[0];
+        _controller.Rource.Play();
         photonView.RPC("LeaveRPC", RpcTarget.All, _damagedNumber);
     }
 
@@ -534,13 +538,15 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
         {
             //GameObject temp = GameObject.CreatePrimitive(PrimitiveType.Cube);
             temp = Instantiate(item, gameObject.transform);
-            temp.transform.position = transform.position + transform.forward * 0.5f;
+            temp.transform.position = transform.position + transform.forward+Vector3.up;
+            Item tempItem=temp.GetComponent<Item>();
+            
             temp.name = "Putted Item";
             StartCoroutine(NotFall(temp));
             itemSetting = true;
 
-            temp.GetComponent<Item>().picked = true;
-            temp.GetComponent<Item>().item = true;
+            tempItem.picked = true;
+            tempItem.item = true;
             item = null;
             used = true;
         }
