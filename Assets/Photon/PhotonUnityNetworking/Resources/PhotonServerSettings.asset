@@ -34,4 +34,4 @@ MonoBehaviour:
   - PlayerCountUpdate
   - UpdateSI
   DisableAutoOpenWizard: 1
-  ShowSettings: 1
+  ShowSettings: 0
