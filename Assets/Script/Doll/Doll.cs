@@ -142,6 +142,7 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
         }
     }
     protected bool usedSkill;
+    public bool skill{get {return usedSkill;}}
     protected bool usedSkill_cd;
     protected bool used;
     protected float time;
@@ -157,6 +158,7 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
     public float line_hight = 10;
     public float speed;
     protected bool isShoot;
+    public bool shoot{get {return isShoot;}}
     /// <summary>
     /// 初始化
     /// </summary>

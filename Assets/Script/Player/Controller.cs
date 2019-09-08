@@ -119,6 +119,7 @@ public abstract class Controller : MonoBehaviourPun,IPunObservable
                     _enterCor = StartCoroutine(Entering(hit.transform));
                     //進入後tag = "Doll"
                     hit.transform.gameObject.tag = "Doll";
+                    
                 }
             }
     }

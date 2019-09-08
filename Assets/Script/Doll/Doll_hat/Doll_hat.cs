@@ -93,7 +93,7 @@ public class Doll_hat : Doll
     }
     public GameObject hat;
     
-    public GameObject hatCone;
+    private GameObject _hatCone;
 
     void Skill()
     {
@@ -101,7 +101,7 @@ public class Doll_hat : Doll
         {
             //cool down
             time += Time.deltaTime; 
-            if (time >= 3.0f)
+            if (time >= 3.0f && !isShoot)
             {
                 usedSkill = false;
                 time = 0;
@@ -112,18 +112,24 @@ public class Doll_hat : Doll
         if(!Input.GetKey(KeyCode.F)){
             shootRange.SetActive(false);
         }
-        if(Input.GetKey(KeyCode.F) && !usedSkill)
+        if(Input.GetKey(KeyCode.F))
         {
+            if(!usedSkill){
+                _hatCone = Instantiate(hat, gameObject.transform);
+                _hatCone.transform.position = transform.position + transform.forward * 1f+Vector3.up;
+                _hatCone.GetComponent<Item_hat>().player = gameObject;
+            }
+            usedSkill = true;
             anim.SetBool("skill", true);
             //射擊方向
             ToMouse();
         }
         
         //使用道具
-        if (Input.GetKeyUp(KeyCode.F) && !usedSkill)
+        if (Input.GetKeyUp(KeyCode.F) && usedSkill)
             {
                 anim.SetBool("skill", false);
-                usedSkill = true;
+                usedSkill = false;
                 isShoot = false;
                 CreateHat();
             }
@@ -132,7 +138,7 @@ public class Doll_hat : Doll
         //順移
         if (Input.GetKeyDown(KeyCode.Y))
         {
-            if (hatCone != null)
+            if (_hatCone != null)
             {
                 StartCoroutine(UseSkill());
             }
@@ -144,21 +150,21 @@ public class Doll_hat : Doll
 
     IEnumerator UseSkill()
     {
-        var temp = hatCone.GetComponent<Item_hat>();
+        var temp = _hatCone.GetComponent<Item_hat>();
         temp.isAttack = true;
         yield return new WaitForSecondsRealtime(0.2f);
         
         //無敵;
-        transform.position = hatCone.transform.position;
+        transform.position = _hatCone.transform.position;
         AddBuff(Global.BuffSort.Invulnerable, 5);
-        Destroy(hatCone.gameObject);
+        Destroy(_hatCone.gameObject);
     }
 
     void CreateHat()
     {
-        hatCone =Instantiate(hat,shootpoint,Quaternion.identity);
-        hatCone.GetComponent<Item_hat>().player = gameObject;
-        hatCone.transform.SetParent(null);
+        //hatCone =Instantiate(hat,shootpoint+Vector3.up,Quaternion.identity);
+        //hatCone.GetComponent<Item_hat>().player = gameObject;
+        _hatCone.transform.SetParent(null);
         lineRenderer.positionCount = 0;
     }
 

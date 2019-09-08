@@ -14,10 +14,14 @@ public class Item_hat : MonoBehaviour
     float skillAttack = 20;
 
     public bool istouch;
+    private Rigidbody _rigidbody;
+    private Doll_hat hatDoll;
     // Start is called before the first frame update
     void Start()
     {
-        hatMove=player.GetComponent<Doll_hat>().itmeMove;
+        hatDoll=player.GetComponent<Doll_hat>();
+        hatMove=hatDoll.itmeMove;
+        _rigidbody=GetComponent<Rigidbody>();
         gameObject.tag = "Hat";
     }
 
@@ -25,7 +29,6 @@ public class Item_hat : MonoBehaviour
     void Update()
     {
         Move();
-        
         //如果碰到Doll，帽子座標=Doll座標
         if(isWear){
             transform.position = target.position;
@@ -37,8 +40,9 @@ public class Item_hat : MonoBehaviour
     bool Move()
     {
         //帽子移動
-        if (!istouch)
+        if (!istouch && !hatDoll.shoot)
         {
+            _rigidbody.isKinematic=false;
             if(movepoint<=hatMove.Length-1){
                 transform.position=Vector3.MoveTowards(transform.position,hatMove[movepoint],speed*Time.deltaTime);
         

@@ -38,7 +38,10 @@ public class Doll_Queen : Doll
     protected override void Move()
     {
         //重写移动
-        base.Move();
+        if (!isShoot)
+        {
+            base.Move();
+        }
     }
 
     protected override void Jump()
@@ -59,6 +62,7 @@ public class Doll_Queen : Doll
     int usedCount;
     float rose_cd=5f;
     bool rose_reset;
+    private GameObject _roseCone;
 
     void Skill()
     {
@@ -77,21 +81,27 @@ public class Doll_Queen : Doll
         if(!Input.GetKey(KeyCode.F)){
             shootRange.SetActive(false);
         }
-        if(Input.GetKey(KeyCode.F) && !rose_reset)
+        if(Input.GetKey(KeyCode.F))
         {
+            if(!usedSkill){
+                _roseCone = Instantiate(rose, gameObject.transform);
+                _roseCone.transform.position = transform.position + transform.forward * 1f+Vector3.up;
+                _roseCone.GetComponent<Item_Rose>().player = gameObject;
+            }
+            usedSkill = true;
             //射擊方向
             ToMouse();
             
         }
         
         //道具生成
-        if (Input.GetKeyUp(KeyCode.F) && !rose_reset)
+        if (Input.GetKeyUp(KeyCode.F) && usedSkill)
             {
                 isShoot = false;
-                if (usedCount <= 3 && !rose_reset)
+                usedSkill = false;
+            if (usedCount <= 3 && !rose_reset)
             {
                 usedCount++;
-
                 if(usedCount==3){
                     rose_reset=true;
                 }
@@ -103,9 +113,9 @@ public class Doll_Queen : Doll
 
     void CreateRose()
     {
-        var temp=Instantiate(rose,shootpoint,Quaternion.identity);
-        temp.GetComponent<Item_Rose>().player = gameObject;
-        temp.transform.SetParent(null);
+        //var temp=Instantiate(rose,shootpoint,Quaternion.identity);
+        //temp.GetComponent<Item_Rose>().player = gameObject;
+        _roseCone.transform.SetParent(null);
         lineRenderer.positionCount = 0;
     }
 

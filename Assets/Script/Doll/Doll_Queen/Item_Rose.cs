@@ -12,19 +12,22 @@ public class Item_Rose : MonoBehaviour
     float speed =50;
     bool istouch;
     float skillAttack = 20;
+    private Rigidbody _rigidbody;
     // Start is called before the first frame update
     void Start()
     {
         explosion.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
         roseMove=player.GetComponent<Doll_Queen>().itmeMove;
+        _rigidbody=GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
     void Update()
     {
         //rose move
-        if (!istouch)
+        if (!istouch && !player.GetComponent<Doll>().shoot)
         {
+            _rigidbody.isKinematic=false;
             if(movepoint<=roseMove.Length-1){
                 transform.position=Vector3.MoveTowards(transform.position,roseMove[movepoint],speed*Time.deltaTime);
         
