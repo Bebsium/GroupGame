@@ -363,6 +363,9 @@ public abstract class Doll : NetworkBehaviour
         _controller.GetComponent<SoulController>().Rource.clip=_controller.GetComponent<SoulController>().BGM[0];
         _controller.GetComponent<SoulController>().Rource.Play();
         //photonView.RPC("LeaveRPC", RpcTarget.All, _damagedNumber);
+        _controller = null;
+        anim.SetBool("run", false);
+        anim.SetBool("carry", false);
         _owner = null;
         CmdReInit();
         _cd = _mCd;
@@ -665,8 +668,15 @@ public abstract class Doll : NetworkBehaviour
         {
             //GameObject temp = GameObject.CreatePrimitive(PrimitiveType.Cube);
             temp = Instantiate(item, gameObject.transform);
-            //if()
-            temp.transform.position = transform.position + transform.forward+Vector3.up;
+            if (bgmId == 1)
+            {
+                temp.transform.position = transform.position + transform.forward + Vector3.up*2f;
+            }
+            else
+            {
+                temp.transform.position = transform.position + transform.forward + Vector3.up;
+            }
+            
             Item tempItem=temp.GetComponent<Item>();
             
             temp.name = "Putted Item";

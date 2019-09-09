@@ -10,7 +10,7 @@ public class SoulController : NetworkBehaviour
     //----------------[Public Area]--------------------
     [SyncVar]
     public string playerName;
-    [HideInInspector]
+    //[HideInInspector]
     public bool hasDoll = false;
 
     //BGM
@@ -161,7 +161,7 @@ public class SoulController : NetworkBehaviour
                     _enterCor = StartCoroutine(Entering(hit.transform));
                     //進入後tag = "Doll"
                     hit.transform.gameObject.tag = "Doll";
-                    
+                    hasDoll = true;
                 }
             }
     }
