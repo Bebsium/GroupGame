@@ -162,10 +162,10 @@ public class MenuUIManager : MonoBehaviour
     {
         if (SE_toggle.isOn == true)
         {
-            PlayerPrefs.SetInt("SEVolume",1);
+            PlayerPrefs.SetFloat("SEVolume",1);
         }else
         {
-            PlayerPrefs.SetInt("SEVolume",0);
+            PlayerPrefs.SetFloat("SEVolume",0);
         }
     }
 
@@ -173,24 +173,24 @@ public class MenuUIManager : MonoBehaviour
     {
         if (voice_toggle.isOn == true)
         {
-            PlayerPrefs.SetInt("voiceVolume",1);
+            PlayerPrefs.SetFloat("voiceVolume",0.5f);
         }else
         {
-            PlayerPrefs.SetInt("voiceVolume",0);
+            PlayerPrefs.SetFloat("voiceVolume",0);
         }
-        _voice.volume=PlayerPrefs.GetInt("voiceVolume");
+        _voice.volume=PlayerPrefs.GetFloat("voiceVolume");
     }
 
     public void BGM()
     {
         if (BGM_toggle.isOn == true)
         {
-            PlayerPrefs.SetInt("BGMVolume",1);
+            PlayerPrefs.SetFloat("BGMVolume",0.1f);
         }else
         {
-            PlayerPrefs.SetInt("BGMVolume",0);
+            PlayerPrefs.SetFloat("BGMVolume",0);
         }
-        _BGM.volume=PlayerPrefs.GetInt("BGMVolume");
+        _BGM.volume=PlayerPrefs.GetFloat("BGMVolume");
     }
 
 

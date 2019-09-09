@@ -10,6 +10,14 @@ public class Doll_Queen : Doll
     public override bool PickItem(string name,string type,int durability)
     {
         //print(Owner.playerName + " picked " + name);
+        if(type=="BoardLight"){
+            source.clip=voice[Random.Range(2,4)];
+            source.Play();
+        }else{
+            source.clip=voice[Random.Range(4,6)];
+            source.Play();
+        }
+        
         anim.SetBool("carry", true);
         item = Resources.Load<GameObject>("Prefab/Item/" + name);
         item.GetComponent<Item>().durability=durability;
@@ -84,8 +92,10 @@ public class Doll_Queen : Doll
         if(Input.GetKey(KeyCode.F))
         {
             if(!usedSkill){
+                source.clip=voice[20];
+                source.Play();
                 _roseCone = Instantiate(rose, gameObject.transform);
-                _roseCone.transform.position = transform.position + transform.forward * 1f+Vector3.up;
+                _roseCone.transform.position = transform.position + transform.forward*1.5f+Vector3.up*0.5f;
                 _roseCone.GetComponent<Item_Rose>().player = gameObject;
             }
             usedSkill = true;
@@ -115,6 +125,8 @@ public class Doll_Queen : Doll
     {
         //var temp=Instantiate(rose,shootpoint,Quaternion.identity);
         //temp.GetComponent<Item_Rose>().player = gameObject;
+        source.clip=voice[21];
+        source.Play();
         _roseCone.transform.SetParent(null);
         lineRenderer.positionCount = 0;
     }

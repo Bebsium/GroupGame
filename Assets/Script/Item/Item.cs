@@ -30,7 +30,7 @@ public class Item : MonoBehaviour
     public bool item;
     int movepoint;
     public Vector3[] itemMove;
-    float speed = 50;
+    float speed = 40;
 
     protected virtual void Start()
     {
@@ -62,7 +62,7 @@ public class Item : MonoBehaviour
 
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (picked)
         {
@@ -96,11 +96,9 @@ public class Item : MonoBehaviour
                 used.enabled=false;
             }
             if(isThrow && !istouch){
-                print(isThrow);
                 StartCoroutine(Move());
             }
             if (istouch){
-                speed = 0;
                 itemClone = Instantiate(itemAreaPrefab, transform);
             }
             
@@ -130,7 +128,6 @@ public class Item : MonoBehaviour
             transform.position = Vector3.MoveTowards(transform.position, itemMove[movepoint], speed * Time.deltaTime);
             if (transform.position == itemMove[movepoint])
             {
-                speed--;
                 movepoint++;
             }
         }
@@ -144,7 +141,7 @@ public class Item : MonoBehaviour
         used.enabled=true;
         picked = false;
         itemMove = player.GetComponent<Doll>().itmeMove;
-        //item = true;
+        istouch = false;
     }
 
     private void OnTriggerStay(Collider other)

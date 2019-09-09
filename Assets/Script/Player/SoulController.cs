@@ -50,7 +50,7 @@ public class SoulController : NetworkBehaviour
         _source=GetComponent<AudioSource>();
         _particleRenderer = transform.Find("Renderer").gameObject;
         hasDoll = false;
-
+        _source.volume=PlayerPrefs.GetFloat("BGMVolume");
         if (isLocalPlayer)
             CameraFollow.instance.CameraFollowObj = gameObject;
     }

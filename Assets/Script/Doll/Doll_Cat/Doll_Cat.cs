@@ -13,6 +13,13 @@ public class Doll_Cat : Doll
     public override bool PickItem(string name,string type,int durability)
     {
         //print(Owner.playerName + " picked " + name);
+        if(type=="BoardLight"){
+            source.clip=voice[Random.Range(2,4)];
+            source.Play();
+        }else{
+            source.clip=voice[Random.Range(4,6)];
+            source.Play();
+        }
         anim.SetBool("carry", true);
         item = Resources.Load<GameObject>("Prefab/Item/" + name);
         item.GetComponent<Item>().durability=durability;
@@ -45,7 +52,9 @@ public class Doll_Cat : Doll
     }
     void FixedUpdate()
     {
-        Skill();
+        if(Controller){
+            Skill();
+        }
     }
 
     protected override void Attack()
@@ -108,7 +117,9 @@ public class Doll_Cat : Doll
 
         if (!usedSkill && !usedSkill_cd)
         {
-            SoundOn();     
+            SoundOn();
+            source.clip=voice[20];
+            source.Play(); 
         }
 
         if (usedSkill && !usedSkill_cd)
@@ -146,8 +157,8 @@ public class Doll_Cat : Doll
 
     private void SoundOn()
     {
-        cdTime = Random.Range(1, 11); //1~10秒
-        maxSoundTime = Random.Range(20, 30);
+        cdTime = Random.Range(1, 16); //1~15秒
+        maxSoundTime = Random.Range(10, 20);
         print(maxSoundTime + "     " + cdTime);
         print("Play");
         usedSkill = true;
