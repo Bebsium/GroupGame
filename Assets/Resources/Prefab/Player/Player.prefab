@@ -220,8 +220,8 @@ MonoBehaviour:
   hasDoll: 0
   BGM:
   - {fileID: 8300000, guid: 636ef0fa94d79714cbc159e472b82f46, type: 3}
-  - {fileID: 8300000, guid: e1e9b4c84d6b93b4ab30fbb90b74ebc2, type: 3}
   - {fileID: 8300000, guid: 8eeadb9e0d747d147bd388417a04369f, type: 3}
+  - {fileID: 8300000, guid: e1e9b4c84d6b93b4ab30fbb90b74ebc2, type: 3}
   - {fileID: 8300000, guid: 9dae648813829fa4a91fbd0ad948940f, type: 3}
   - {fileID: 8300000, guid: f1ee9d96886e1d749b8b1b3cb1ed56b9, type: 3}
 --- !u!114 &1524529299428455505

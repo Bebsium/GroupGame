@@ -665,6 +665,7 @@ public abstract class Doll : NetworkBehaviour
         {
             //GameObject temp = GameObject.CreatePrimitive(PrimitiveType.Cube);
             temp = Instantiate(item, gameObject.transform);
+            //if()
             temp.transform.position = transform.position + transform.forward+Vector3.up;
             Item tempItem=temp.GetComponent<Item>();
             
