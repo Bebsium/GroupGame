@@ -1,19 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Global;
-using Photon.Pun;
-using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.Networking;
 
-[RequireComponent(typeof(PhotonView))]
-[RequireComponent(typeof(PhotonTransformView))]
+[RequireComponent(typeof(NetworkIdentity))]
+[RequireComponent(typeof(NetworkTransform))]
 [RequireComponent(typeof(Rigidbody))]
-public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallbacks
+public abstract class Doll : NetworkBehaviour
 {
     //----------------[Public Area]--------------------
     //item
     public GameObject item;
-
+    public int bgmId;
 
     public AttackState attackState;
     public ThrowState throwState;
@@ -21,13 +20,24 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
     public bool itemSetting;
     public bool isAttack;
     //KO值回傳-------------
-    public float Knockout { set { _ko -= value; } }
+    public float Knockout { set { CmdKnockout(value); } }
     private float _ko;
     //--------------------
 
 
     //人偶受到伤害
-    public virtual float Hurt { set { _hp -= value * (1 - _defense); } }
+    public virtual float Hurt { set { CmdHurt(value); } }
+
+    [Command]
+    private void CmdHurt(float value)
+    {
+        _hp -= value * (1 - _defense);
+    }
+
+    private void CmdKnockout(float value)
+    {
+        _ko -= value;
+    }
 
     /// <summary>
     /// 添加Buff
@@ -70,40 +80,69 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
 
     public bool CanEnter { get { if (_cd > 0f) return false; else return true; } }
 
-    public bool EnterCheck(Controller player)
+    public void Enter(GameObject player)
     {
+        print("Enter");
         if (_cd > 0f)
-            return false;
-        if (Owner == "" || Owner == null)
+            return;
+
+        //if (Owner == "" || Owner == null)
+        if(_controller == null)
         {
             _controller = player;
-            photonView.RPC("EnterRPC", RpcTarget.All, player.photonView.Owner.UserId);
-            //print(player.photonView.Owner.ActorNumber);
-            player.PlayerAction = Action;
-            photonView.TransferOwnership(player.photonView.Owner);
-            return true;
+            //_owner = _controller.GetComponent<SoulController>().playerName;
+            if (isServer)
+            {
+                _owner = _controller.GetComponent<SoulController>().playerName;
+            }
+
+            if (isClient)
+            {
+                CmdChangeName(player.name);
+            }
+            _controller.GetComponent<SoulController>().PlayerAction = Action;
         }
-        return false;
+        //CmdEnterCheck(name);
+        //CmdChangeName(_owner);
     }
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    [Command]
+    private void CmdChangeName(string contro)
     {
-        if (Owner == null || Owner == "")
-            return;
-        if (stream.IsWriting)
+        _controller = GameObject.Find(contro);
+        print(_controller);
+        //_controller = contro;
+        _owner = _controller.GetComponent<SoulController>().playerName;
+    }
+
+    [Command]
+    private void CmdEnterCheck(string player)
+    {
+        print("Command CmdEnterCheck: " + player);
+        if (Owner == "" || Owner == null)
         {
-            stream.SendNext(_hp);
-            stream.SendNext(_atk);
-            stream.SendNext(_spd);
-            stream.SendNext(_defense);
+            _controller = GameObject.Find(player);
+            _owner = _controller.GetComponent<SoulController>().playerName;
+            _controller.GetComponent<SoulController>().PlayerAction = Action;
+            //RpcDollChangeState(player);
+            //_controller = player.GetComponent<Controller>();
+            //_owner = _controller.playerUniqueIdentity;
+            //_controller.PlayerAction = Action;
+            //print("aaaa");
+
+            //GetComponent<NetworkIdentity>().AssignClientAuthority(NetConnectController.instance.connection);
+            //photonView.TransferOwnership(player.photonView.Owner);
         }
-        else if (stream.IsReading)
-        {
-            this._hp = (float)stream.ReceiveNext();
-            this._atk = (float)stream.ReceiveNext();
-            this._spd = (float)stream.ReceiveNext();
-            this._defense = (float)stream.ReceiveNext();
-        }
+    }
+
+    [ClientRpc]
+    private void RpcDollChangeState(string player)
+    {
+        print("RpcDollChangeState: "+player);
+        _controller = GameObject.Find(player);
+        _owner = _controller.GetComponent<SoulController>().playerName;
+        _controller.GetComponent<SoulController>().PlayerAction = Action;
+        print("aaaa");
     }
 
     //拾取物件，子类必须实现
@@ -175,7 +214,7 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
         _owner = null;
         _buff = new List<Buff>();
         //photonView.RPC("ReInit", RpcTarget.All);
-        ReInit();
+        CmdReInit();
         //初始KO值
         _ko = 100;
         // throw
@@ -187,6 +226,7 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
         //anim
         controller = GetComponent<CapsuleCollider>();
         anim = GetComponent<Animator>();
+        _identity = GetComponent<NetworkIdentity>();
     }
 
     /// <summary>
@@ -237,20 +277,30 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
 
     #region Private
     [SerializeField]
+    [SyncVar]
     private string _owner;
-    private Controller _controller;
+    [SerializeField]
+    [SyncVar]
+    private GameObject _controller;
     private Rigidbody _rigi;
     private float _mHp;
     private float _mAtk;
     private float _mSpd;
     [SerializeField]
+    [SyncVar]
     private float _hp;
+    [SyncVar]
     private float _atk;
+    [SyncVar]
     private float _spd;
+    [SyncVar]
     private float _defense;
+    [SyncVar]
     private int _damagedNumber;
+    [SyncVar]
     private float _mCd;
     [SerializeField]
+    [SyncVar]
     private float _cd;
     private GameObject _dollAreaPrefab;
     private GameObject _dollArea;
@@ -260,6 +310,7 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
     private float _tempSpd;
     private float _tempDefense;
     private bool _attrPromoted = false;
+    private NetworkIdentity _identity;
 
     private List<Buff> _buff = new List<Buff>();
 
@@ -270,23 +321,23 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
     /// <returns></returns>
     private Vector3 Action()
     {
-        if(Owner != PhotonNetwork.LocalPlayer.UserId)
-        {
-            return transform.position;
-        }
+        //if(Owner != PhotonNetwork.LocalPlayer.UserId)
+        //{
+        //    return transform.position;
+        //}
             
-        if (!Damaged)
-        {
-            BuffCountDown();
-            Loop();
-            Move();
-            Jump();
-            LeaveDoll();
-        }
-        else
-        {
-            LeaveDollOwnerFunction();
-        }
+        //if (!Damaged)
+        //{
+        //    BuffCountDown();
+        //    Loop();
+        //    Move();
+        //    Jump();
+        //    LeaveDoll();
+        //}
+        //else
+        //{
+        //    LeaveDollOwnerFunction();
+        //}
         return transform.position;
     }
 
@@ -304,14 +355,17 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
     private void LeaveDollOwnerFunction()
     {
         transform.tag = "Untagged";
-        _controller.PlayerAction -= Action;
-        _controller.hasDoll = false;
-        photonView.TransferOwnership(0);
-        _controller.LeaveDoll();
+        _controller.GetComponent<SoulController>().PlayerAction -= Action;
+        _controller.GetComponent<SoulController>().hasDoll = false;
+        //photonView.TransferOwnership(0);
+        _controller.GetComponent<SoulController>().LeaveDoll();
         //BGM
-        _controller.Rource.clip=_controller.BGM[0];
-        _controller.Rource.Play();
-        photonView.RPC("LeaveRPC", RpcTarget.All, _damagedNumber);
+        _controller.GetComponent<SoulController>().Rource.clip=_controller.GetComponent<SoulController>().BGM[0];
+        _controller.GetComponent<SoulController>().Rource.Play();
+        //photonView.RPC("LeaveRPC", RpcTarget.All, _damagedNumber);
+        _owner = null;
+        CmdReInit();
+        _cd = _mCd;
     }
 
     /// <summary>
@@ -332,11 +386,34 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
         }
     }
 
+    private void Control()
+    {
+        if (_controller == null || !_controller.GetComponent<SoulController>().isLocalPlayer)
+        //if (Owner != PlayerPrefs.GetString("LocalUnique"))
+        {
+            return;
+        }
+
+        if (!Damaged)
+        {
+            BuffCountDown();
+            Loop();
+            Move();
+            Jump();
+            LeaveDoll();
+        }
+        else
+        {
+            LeaveDollOwnerFunction();
+        }
+    }
+
     /// <summary>
     /// 重置人偶状态
     /// </summary>
     //[PunRPC]
-    private void ReInit()
+    [Command]
+    private void CmdReInit()
     {
         if (_damagedNumber == 0)
         {
@@ -357,19 +434,64 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
         _spd = _mSpd;
     }
 
+
+    [Client]
+    void AAAA()
+    {
+        print("Client: " + transform.name);
+    }
+
+    [Server]
+    void BBBB()
+    {
+        print("Server: " + transform.name);
+    }
+
+    [ClientRpc]
+    void RpcCCCC()
+    {
+        print("ClientRpc: " + transform.name);
+    }
+
+    [Command]
+    void CmdEEEEE()
+    {
+        print("Command: " + transform.name);
+    }
+
     /// <summary>
     /// 人偶可进入冷却时间计算
     /// </summary>
     private void Update()
     {
+        Control();
+
         if(_damagedNumber > Parameter.CanDestroyNum)
         {
             _dollArea.SetActive(false);
             return;
         }
-        if (Owner == "" || Owner == null)
+        //if (Owner == "" || Owner == null)
+        //if (_identity.hasAuthority)
+        //{
+        //    if (!_identity.isLocalPlayer)
+        //    {
+        //        if (_cd > 0f)
+        //        {
+        //            _cd -= Time.deltaTime;
+        //            GuiAction?.Invoke(new DollComm(DollCDType.PossessCd, _cd / _mCd));
+        //            _dollArea.SetActive(false);
+        //            return;
+        //        }
+        //    }
+        //    _dollArea.SetActive(false);
+        //    return;
+        //}
+        //_dollArea.SetActive(true);
+        //return;
+        if (_controller == null)
         {
-            transform.SendMessage("NickName", "");
+            //transform.SendMessage("NickName", "");
             if (_cd > 0f)
             {
                 _cd -= Time.deltaTime;
@@ -380,10 +502,11 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
             _dollArea.SetActive(true);
             return;
         }
-        else if (Owner != PhotonNetwork.LocalPlayer.UserId)
+        //else if (Owner != PlayerPrefs.GetString("LocalUnique"))
+        else if (!_controller.GetComponent<SoulController>().isLocalPlayer)
         {
             GuiAction?.Invoke(new DollComm(DollCDType.HPBar, _hp / _mHp));
-            transform.SendMessage("NickName", photonView.Owner.NickName);
+            //transform.SendMessage("NickName", photonView.Owner.NickName);
         }
         _dollArea.SetActive(false);
     }
@@ -414,50 +537,54 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
     /// <returns></returns>
     private IEnumerator AttrProTimeCalc(float atk, float spd, float def, float time)
     {
-        _atk += atk;
-        _spd += spd;
-        _defense += def;
+        CmdAttr(_atk + atk, _spd + spd, _defense + def);
         yield return new WaitForSeconds(time);
-        _atk = _tempAtk;
-        _spd = _tempSpd;
-        _defense = _tempDefense;
+        CmdAttr(_tempAtk, _tempSpd, _tempDefense);
         _attrPromoted = false;
     }
 
-    [PunRPC]
-    public void EnterRPC(string con)
+    [Command]
+    private void CmdAttr(float atk, float spd, float def)
     {
-        _owner = con;
+        _atk = atk;
+        _spd = spd;
+        _defense = def;
     }
 
-    [PunRPC]
-    public void LeaveRPC(int n)
-    {
-        _owner = null;
-        _damagedNumber = n;
-        ReInit();
-        _cd = _mCd;
-    }
+    //[PunRPC]
+    //public void EnterRPC(string con)
+    //{
+    //    _owner = con;
+    //}
 
-    public void OnOwnershipRequest(PhotonView targetView, Player requestingPlayer)
-    {
+    //[PunRPC]
+    //public void LeaveRPC(int n)
+    //{
+    //    _owner = null;
+    //    _damagedNumber = n;
+    //    ReInit();
+    //    _cd = _mCd;
+    //}
+
+    //public void OnOwnershipRequest(PhotonView targetView, Player requestingPlayer)
+    //{
         
-    }
+    //}
 
-    public void OnOwnershipTransfered(PhotonView targetView, Player previousOwner)
-    {
-        //if (targetView.IsSceneView)
-        //{
-        //    SendMessage("NickName", "");
-        //}
-        //else if (targetView.IsOwnerActive) 
-        //{
-        //    if (!photonView.IsMine)
-        //    {
-        //        SendMessage("NickName", targetView.Owner.NickName);
-        //    }
-        //}
-    }
+    //public void OnOwnershipTransfered(PhotonView targetView, Player previousOwner)
+    //{
+    //    //if (targetView.IsSceneView)
+    //    //{
+    //    //    SendMessage("NickName", "");
+    //    //}
+    //    //else if (targetView.IsOwnerActive) 
+    //    //{
+    //    //    if (!photonView.IsMine)
+    //    //    {
+    //    //        SendMessage("NickName", targetView.Owner.NickName);
+    //    //    }
+    //    //}
+    //}
 
     //Item
     protected virtual void ItemType(string name)
