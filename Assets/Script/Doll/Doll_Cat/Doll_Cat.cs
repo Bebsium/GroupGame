@@ -42,6 +42,9 @@ public class Doll_Cat : Doll
         //attack && ItemAttack
         Attack();
 
+    }
+    void FixedUpdate()
+    {
         Skill();
     }
 
@@ -159,7 +162,7 @@ public class Doll_Cat : Doll
         AddBuff(Global.BuffSort.Invulnerable, maxSoundTime);
         defence = 0.5f;
         //add ATK.HP.SPD
-        AttributePromotion(30, 30, 30, maxSoundTime);
+        AttributePromotion(30, 5, 30, maxSoundTime);
         yield return new WaitForSeconds(time);
         //buff remove
         RemoveBuff(Global.BuffSort.Invulnerable);

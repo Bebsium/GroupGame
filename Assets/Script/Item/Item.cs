@@ -62,7 +62,7 @@ public class Item : MonoBehaviour
 
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (picked)
         {
@@ -96,9 +96,11 @@ public class Item : MonoBehaviour
                 used.enabled=false;
             }
             if(isThrow && !istouch){
+                print(isThrow);
                 StartCoroutine(Move());
             }
             if (istouch){
+                speed = 0;
                 itemClone = Instantiate(itemAreaPrefab, transform);
             }
             
@@ -128,6 +130,7 @@ public class Item : MonoBehaviour
             transform.position = Vector3.MoveTowards(transform.position, itemMove[movepoint], speed * Time.deltaTime);
             if (transform.position == itemMove[movepoint])
             {
+                speed--;
                 movepoint++;
             }
         }

@@ -118,7 +118,7 @@ public class Doll_hat : Doll
         {
             if(!usedSkill){
                 _hatCone = Instantiate(hat, gameObject.transform);
-                _hatCone.transform.position = transform.position + transform.forward * 1f+Vector3.up;
+                _hatCone.transform.position = transform.position + transform.forward*1.5f * 1f+Vector3.up*2f;
                 _hatCone.GetComponent<Item_hat>().player = gameObject;
             }
             usedSkill = true;

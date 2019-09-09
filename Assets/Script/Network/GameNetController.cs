@@ -87,11 +87,11 @@ public class GameNetController : NetworkManager
                 //print("Server waiting......");
                 //if (numPlayers > 1)
                 //{
-                //    //discovery.StopBroadcast();
-                //    loading.run = false;
-                //    start = true;
-                //    break;
-                //}
+                    //discovery.StopBroadcast();
+                    loading.run = false;
+                    start = true;
+               //     break;
+               // }
             }
 
             else if (IsClientConnected())
