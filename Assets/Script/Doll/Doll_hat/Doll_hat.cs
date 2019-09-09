@@ -10,6 +10,13 @@ public class Doll_hat : Doll
     public override bool PickItem(string name,string type,int durability)
     {
         //print(Owner.playerName + " picked " + name);
+        if(type=="BoardLight"){
+            source.clip=voice[Random.Range(2,4)];
+            source.Play();
+        }else{
+            source.clip=voice[Random.Range(4,6)];
+            source.Play();
+        }
         anim.SetBool("carry", true);
         item = Resources.Load<GameObject>("Prefab/Item/" + name);
         item.GetComponent<Item>().durability=durability;
@@ -118,8 +125,10 @@ public class Doll_hat : Doll
         {
             if(!usedSkill){
                 _hatCone = Instantiate(hat, gameObject.transform);
-                _hatCone.transform.position = transform.position + transform.forward*1.5f * 1f+Vector3.up*2f;
+                _hatCone.transform.position = transform.position + transform.forward*1.5f+Vector3.up*2f;
                 _hatCone.GetComponent<Item_hat>().player = gameObject;
+                source.clip=voice[20];
+                source.Play();
             }
             usedSkill = true;
             anim.SetBool("skill", true);
@@ -154,7 +163,8 @@ public class Doll_hat : Doll
         var temp = _hatCone.GetComponent<Item_hat>();
         temp.isAttack = true;
         yield return new WaitForSecondsRealtime(0.2f);
-        
+        source.clip=voice[21];
+        source.Play();
         //無敵;
         transform.position = _hatCone.transform.position;
         AddBuff(Global.BuffSort.Invulnerable, 5);

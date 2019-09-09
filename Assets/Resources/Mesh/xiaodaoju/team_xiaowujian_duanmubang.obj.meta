@@ -11,7 +11,12 @@ ModelImporter:
     2300000: polySurface1699_polySurface1530
     3300000: polySurface1699_polySurface1530
     4300000: polySurface1699_polySurface1530
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: polySurface1699_polySurface1530Mat
+    second: {fileID: 2100000, guid: 5c10652bea755354593c7d834454a84b, type: 3}
   materials:
     importMaterials: 1
     materialName: 0

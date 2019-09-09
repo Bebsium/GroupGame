@@ -23,7 +23,9 @@ public abstract class Doll : NetworkBehaviour
     public float Knockout { set { CmdKnockout(value); } }
     private float _ko;
     //--------------------
-
+    protected List<AudioClip> voice=new List<AudioClip>();
+    protected AudioSource source;
+    protected GameObject Controller{get {return _controller;}}
 
     //人偶受到伤害
     public virtual float Hurt { set { CmdHurt(value); } }
@@ -90,6 +92,8 @@ public abstract class Doll : NetworkBehaviour
         if(_controller == null)
         {
             _controller = player;
+            source.clip=voice[22];
+            source.Play(); 
             //_owner = _controller.GetComponent<SoulController>().playerName;
             if (isServer)
             {
@@ -220,6 +224,10 @@ public abstract class Doll : NetworkBehaviour
         // throw
         cam = Camera.main;
         shootRange = Instantiate(cursor, transform);
+        if(bgmId==3){
+            _dollArea.transform.localScale=shootRange.transform.localScale/4;
+            shootRange.transform.localScale=shootRange.transform.localScale/4;
+        }
         lineRenderer = gameObject.AddComponent<LineRenderer>();
         lineRenderer.positionCount = 0;
         lineRenderer.material = line;
@@ -227,6 +235,16 @@ public abstract class Doll : NetworkBehaviour
         controller = GetComponent<CapsuleCollider>();
         anim = GetComponent<Animator>();
         _identity = GetComponent<NetworkIdentity>();
+
+        //voice
+        source=GetComponent<AudioSource>();
+        source.volume=PlayerPrefs.GetFloat("voiceVolume");
+        Object[] sound = Resources.LoadAll("Sound/"+bgmId,typeof(AudioClip));
+        foreach (AudioClip index in sound)
+        {
+            voice.Add(index);
+        }
+        
     }
 
     /// <summary>
@@ -259,6 +277,8 @@ public abstract class Doll : NetworkBehaviour
         Rigi.SampleJump();
         if (Input.GetKeyDown(Key.Jump))
         {
+            source.clip=voice[Random.Range(0,2)];
+            source.Play();
             anim.SetTrigger("jump");
         }
     }
@@ -594,11 +614,11 @@ public abstract class Doll : NetworkBehaviour
     {
          if (name == "Heavy")
         {
-            attackState = AttackState.HeavyAttack;
+            //attackState = AttackState.HeavyAttack;
             throwState = ThrowState.HeavyThrow;
         }else if (name == "BoardHeavy" || name == "BoardLight" ||name == "Board")
         {
-            attackState = AttackState.StickAttack;
+            //attackState = AttackState.StickAttack;
             if(name == "BoardHeavy"){
                 throwState = ThrowState.HeavyThrow;
             }else if(name == "BoardLight"){
@@ -609,7 +629,7 @@ public abstract class Doll : NetworkBehaviour
             }
         }else if (name == "Campstool")
         {
-            attackState = AttackState.CampstoolAttack;
+            //attackState = AttackState.CampstoolAttack;
             throwState = ThrowState.HeavyThrow;
         }
     }
@@ -628,6 +648,8 @@ public abstract class Doll : NetworkBehaviour
                 
                 break;
             default:
+                source.clip=voice[Random.Range(6,8)];
+                source.Play();
                 anim.SetTrigger("attack");
                 anim.SetBool("carry", false);
                 break;
@@ -642,12 +664,20 @@ public abstract class Doll : NetworkBehaviour
                 //LightThrow anim
                 break;
             case ThrowState.HeavyThrow:
-                
+                source.clip=voice[13];
+                source.Play();
+                anim.SetBool("carry", false);
+                anim.SetTrigger("heavythrow");
                 break;
             case ThrowState.StickThrow:
-                
+                source.clip=voice[11];
+                source.Play();
+                anim.SetBool("carry", false);
+                anim.SetTrigger("throw");
                 break;
             default:
+                source.clip=voice[11];
+                source.Play();
                 anim.SetBool("carry", false);
                 anim.SetTrigger("throw");
                 break;
@@ -670,9 +700,11 @@ public abstract class Doll : NetworkBehaviour
             temp = Instantiate(item, gameObject.transform);
             if (bgmId == 1)
             {
-                temp.transform.position = transform.position + transform.forward + Vector3.up*2f;
-            }
-            else
+                temp.transform.position = transform.position + transform.forward*1f+Vector3.up*2;
+            }else if(bgmId==3){
+                temp.transform.localScale=temp.transform.localScale/4;
+                temp.transform.position = transform.position + transform.forward*1.4f + Vector3.up;
+            }else
             {
                 temp.transform.position = transform.position + transform.forward + Vector3.up;
             }

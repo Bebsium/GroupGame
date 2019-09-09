@@ -11,9 +11,9 @@ namespace Global
     public static class Parameter
     {
         //遊戲音效
-        public static int BGMVolume;
-        public static int voiceVolume;
-        public static int SEVolume;
+        public static float BGMVolume;
+        public static float voiceVolume;
+        public static float SEVolume;
         //灵魂状态移动速度
         public static float SoulSPD { get { return 10f; } }
         //人偶最生命值上限
