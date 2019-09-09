@@ -29,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3659482044305209724}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.531, y: 0, z: -1.09}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1769792164326230335}
@@ -112,6 +112,7 @@ MonoBehaviour:
   unUsed: {fileID: 0}
   used: {fileID: 0}
   player: {fileID: 0}
+  istouch: 0
   item: 0
   itemMove: []
   isAttack: 0

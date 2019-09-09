@@ -3670,6 +3670,26 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &1524233415 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: cfd747682aa11b745aced97109aa5056,
+    type: 3}
+  m_PrefabInstance: {fileID: 1267076175}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &1524233416
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1524233415}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_Mesh: {fileID: 4300000, guid: cfd747682aa11b745aced97109aa5056, type: 3}
 --- !u!1001 &1537079065
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5543,6 +5563,11 @@ PrefabInstance:
       propertyPath: typeName
       value: BoardHeavy
       objectReference: {fileID: 0}
+    - target: {fileID: 124202315573712505, guid: 342056862cdc6d44fa3e5fe36264e710,
+        type: 3}
+      propertyPath: durability
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 342056862cdc6d44fa3e5fe36264e710, type: 3}
 --- !u!4 &365672234858902880 stripped
@@ -5562,6 +5587,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: shuiguopanzi
+      objectReference: {fileID: 0}
+    - target: {fileID: 4719369356339580669, guid: b627029c3ef10504fa6a6da6ee2eb3a0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4719369356339548893, guid: b627029c3ef10504fa6a6da6ee2eb3a0,
         type: 3}
@@ -5686,6 +5716,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6225353961820808364, guid: f2733543d648d4e4da863303e86074b6,
+        type: 3}
+      propertyPath: durability
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f2733543d648d4e4da863303e86074b6, type: 3}
@@ -6161,6 +6196,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5028524929974597073, guid: 65c5163ac63ffcb46a52e38dee36e0c0,
+        type: 3}
+      propertyPath: durability
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 65c5163ac63ffcb46a52e38dee36e0c0, type: 3}
 --- !u!4 &5158800211471234279 stripped
@@ -6467,6 +6507,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 94290949318710918, guid: 0722caeb773a23e48bd549356bfe5212,
+        type: 3}
+      propertyPath: durability
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0722caeb773a23e48bd549356bfe5212, type: 3}
 --- !u!1001 &8422416666983912774
@@ -6614,6 +6659,11 @@ PrefabInstance:
         type: 3}
       propertyPath: typeName
       value: BoardHeavy
+      objectReference: {fileID: 0}
+    - target: {fileID: 8465482746248425805, guid: e3f11145357b39a46a0f4aae7bc36a6e,
+        type: 3}
+      propertyPath: durability
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e3f11145357b39a46a0f4aae7bc36a6e, type: 3}

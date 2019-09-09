@@ -97,10 +97,9 @@ public class Item : MonoBehaviour
             }
             if(isThrow && !istouch){
                 StartCoroutine(Move());
-            }else if(istouch){
-                isThrow = false;
-                //istouch=false;
-                //itemClone = Instantiate(itemAreaPrefab, transform);
+            }
+            if (istouch){
+                itemClone = Instantiate(itemAreaPrefab, transform);
             }
             
         }
@@ -174,7 +173,7 @@ public class Item : MonoBehaviour
     private void OnCollisionStay(Collision collision)
     {
         if(collision.gameObject != player.gameObject)
-        {
+        {      
             istouch = true;
             isThrow=false;
         }
