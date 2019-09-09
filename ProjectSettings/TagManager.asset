@@ -8,6 +8,7 @@ TagManager:
   - Item
   - Hat
   - Rose
+  - Fire
   layers:
   - Default
   - TransparentFX
@@ -21,7 +22,7 @@ TagManager:
   - Doll
   - Player
   - Item
-  - 
+  - Sky
   - 
   - 
   - 

@@ -52,7 +52,7 @@ public class SoulController : NetworkBehaviour
         hasDoll = false;
 
         if (isLocalPlayer)
-            CameraFollow.instance.CameraFollowObj = gameObject;
+            CameraFollow.instance.Init(transform);
     }
 
     /// <summary>
