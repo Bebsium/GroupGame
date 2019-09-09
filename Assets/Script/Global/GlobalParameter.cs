@@ -125,12 +125,14 @@ namespace Global
         /// </summary>
         /// <param name="self">对象</param>
         /// <param name="force">力度</param>
-        public static void SampleJump(this Rigidbody self, float force = 15f)
+        public static bool SampleJump(this Rigidbody self, float force = 15f)
         {
             if (Input.GetKeyDown(Key.Jump))
             {
                 self.AddForce(Vector3.up * force, ForceMode.Impulse);
+                return true;
             }
+            return false;
         }
 
         /// <summary>

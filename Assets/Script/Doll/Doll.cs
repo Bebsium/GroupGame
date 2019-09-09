@@ -269,14 +269,17 @@ public abstract class Doll : NetworkBehaviour
         }
     }
 
+    bool canJump = true;
     /// <summary>
     /// 人偶基础跳跃
     /// </summary>
     protected virtual void Jump()
     {
-        Rigi.SampleJump();
-        if (Input.GetKeyDown(Key.Jump))
+        if (!canJump)
+            return;
+        if (Rigi.SampleJump())
         {
+            canJump = false;
             source.clip=voice[Random.Range(0,2)];
             source.Play();
             anim.SetTrigger("jump");
@@ -341,23 +344,23 @@ public abstract class Doll : NetworkBehaviour
     /// <returns></returns>
     private Vector3 Action()
     {
-        //if(Owner != PhotonNetwork.LocalPlayer.UserId)
-        //{
-        //    return transform.position;
-        //}
-            
-        //if (!Damaged)
-        //{
-        //    BuffCountDown();
-        //    Loop();
-        //    Move();
-        //    Jump();
-        //    LeaveDoll();
-        //}
-        //else
-        //{
-        //    LeaveDollOwnerFunction();
-        //}
+        if (_controller == null || !_controller.GetComponent<SoulController>().isLocalPlayer)
+        {
+            return transform.position;
+        }
+
+        if (!Damaged)
+        {
+            BuffCountDown();
+            Loop();
+            Move();
+            Jump();
+            LeaveDoll();
+        }
+        else
+        {
+            LeaveDollOwnerFunction();
+        }
         return transform.position;
     }
 
@@ -457,37 +460,12 @@ public abstract class Doll : NetworkBehaviour
         _spd = _mSpd;
     }
 
-
-    [Client]
-    void AAAA()
-    {
-        print("Client: " + transform.name);
-    }
-
-    [Server]
-    void BBBB()
-    {
-        print("Server: " + transform.name);
-    }
-
-    [ClientRpc]
-    void RpcCCCC()
-    {
-        print("ClientRpc: " + transform.name);
-    }
-
-    [Command]
-    void CmdEEEEE()
-    {
-        print("Command: " + transform.name);
-    }
-
     /// <summary>
     /// 人偶可进入冷却时间计算
     /// </summary>
     private void Update()
     {
-        Control();
+        //Control();
 
         if(_damagedNumber > Parameter.CanDestroyNum)
         {
@@ -804,6 +782,7 @@ public abstract class Doll : NetworkBehaviour
     //-------------------------------------------
     protected virtual void OnCollisionEnter(Collision collision)
     {
+        canJump = true;
         //Doll_hot 以外的其他玩偶共通-----
         if (collision.gameObject.tag == "Hat")
         {

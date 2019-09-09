@@ -63,12 +63,16 @@ public class SoulController : NetworkBehaviour
         transform.SampleMove(Parameter.SoulSPD);
     }
 
+    bool canJump = true;
     /// <summary>
     /// 人物跳跃
     /// </summary>
     protected virtual void Jump()
     {
-        Rigi.SampleJump();
+        if (!canJump)
+            return;
+        if (Rigi.SampleJump())
+            canJump = false;
     }
 
     /// <summary>
@@ -164,6 +168,11 @@ public class SoulController : NetworkBehaviour
                     hasDoll = true;
                 }
             }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        canJump = true;
     }
 
     private IEnumerator Entering(Transform obj)
