@@ -3609,7 +3609,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.08
+  m_Radius: 0.12
   m_Height: 0.3
   m_Direction: 1
   m_Center: {x: 0, y: 0.12, z: 0}
@@ -3784,7 +3784,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!1001 &1147807762
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7006,6 +7006,16 @@ PrefabInstance:
       propertyPath: speed
       value: 3.5
       objectReference: {fileID: 0}
+    - target: {fileID: 1159814012239522078, guid: ddbf5afd81b7403478da99063d1cfab6,
+        type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1159814012239522051, guid: ddbf5afd81b7403478da99063d1cfab6,
+        type: 3}
+      propertyPath: m_Radius
+      value: 0.4
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1159814012239522049, guid: ddbf5afd81b7403478da99063d1cfab6, type: 3}
     - {fileID: 1159814012239522048, guid: ddbf5afd81b7403478da99063d1cfab6, type: 3}
@@ -7486,6 +7496,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 921378651424301316, guid: 29e6574a5678b3d43be95379aa3ea8f0,
         type: 3}
+    - target: {fileID: 3138138590207789334, guid: 456aba23aff62c549ba073c947f1c533,
+        type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3138138590207789340, guid: 456aba23aff62c549ba073c947f1c533,
+        type: 3}
+      propertyPath: m_Radius
+      value: 0.6
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3138138590207789328, guid: 456aba23aff62c549ba073c947f1c533, type: 3}
     - {fileID: 3138138590207789342, guid: 456aba23aff62c549ba073c947f1c533, type: 3}
