@@ -26,7 +26,12 @@ public class Item : MonoBehaviour
     public bool item;
     int movepoint;
     public Vector3[] itemMove;
+<<<<<<< Updated upstream
     float speed = 50;
+=======
+    float speed = 40;
+    Doll doll;
+>>>>>>> Stashed changes
 
     protected virtual void Start()
     {
@@ -34,6 +39,11 @@ public class Item : MonoBehaviour
         transform.tag = "Item";
         itemAreaPrefab = Resources.Load<GameObject>("Prefab/Item/ItemArea");
         player = gameObject.transform.parent;
+<<<<<<< Updated upstream
+=======
+        doll = player.gameObject.GetComponent<Doll>();
+        istouch=false;
+>>>>>>> Stashed changes
         if (!picked)
         {
             //remove itemArea
@@ -45,7 +55,7 @@ public class Item : MonoBehaviour
         unUsed = transform.Find("Unused");
         used = gameObject.GetComponent<BoxCollider>();
 
-        used.enabled=false;
+        //used.enabled=false;
         color = GetComponent<Renderer>().material.color;
         colTemp = color;
         color.a = 0.75f;
@@ -76,19 +86,35 @@ public class Item : MonoBehaviour
             //throw
             if (Input.GetMouseButtonDown(1))
             {
+<<<<<<< Updated upstream
                 
                 used.enabled=true;
                 gameObject.GetComponent<Rigidbody>().isKinematic = true;
                 
+=======
+                _rigidbody.isKinematic = true;
+                //used.enabled=true;
+>>>>>>> Stashed changes
             }
             if(Input.GetMouseButtonUp(1) && !isThrow){
                 
                 isThrow =true;
+<<<<<<< Updated upstream
 
             }
             if(isThrow){
                 Move();
             }
+=======
+                //_rigidbody.isKinematic = false;
+                //unUsed.gameObject.SetActive(true);
+                //used.enabled=false;
+            }
+            if(isThrow && !istouch){
+                StartCoroutine(Move());
+            }
+            
+>>>>>>> Stashed changes
             
         }
 
@@ -108,6 +134,15 @@ public class Item : MonoBehaviour
 
     bool Move()
     {
+<<<<<<< Updated upstream
+=======
+        if (itemClone == null)
+        {
+            itemClone = Instantiate(itemAreaPrefab, transform);
+        }
+        _rigidbody.isKinematic = false;
+        yield return new WaitForSeconds(0.25f);
+>>>>>>> Stashed changes
         //item移動
         if (movepoint <= itemMove.Length - 1)
         {
@@ -118,6 +153,7 @@ public class Item : MonoBehaviour
                 movepoint++;
             }
         }
+<<<<<<< Updated upstream
         if (movepoint == itemMove.Length - 1)
         {
             isThrow = false;
@@ -127,13 +163,16 @@ public class Item : MonoBehaviour
             used.enabled = false;
         }
         return true;
+=======
+        
+>>>>>>> Stashed changes
     }
 
     IEnumerator PickedChange()
     {
         yield return new WaitForSeconds(1);
-        unUsed.gameObject.SetActive(false);
-        used.enabled=true;
+        //unUsed.gameObject.SetActive(false);
+        //used.enabled=true;
         picked = false;
         itemMove = player.GetComponent<TestDoll>().itmeMove;
         //item = true;
@@ -152,8 +191,8 @@ public class Item : MonoBehaviour
                     Destroy(gameObject);
             }
 
-            unUsed.gameObject.SetActive(true);
-            used.enabled = false;
+            //unUsed.gameObject.SetActive(true);
+            //used.enabled = false;
             
         }
 
@@ -165,6 +204,22 @@ public class Item : MonoBehaviour
             isAttack = false;
         }
     }
+<<<<<<< Updated upstream
+=======
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (!istouch)
+        {
+            if (collision.gameObject != player)
+            {
+                istouch = true;
+                //_rigidbody.isKinematic = false;
+            }
+        }
+
+    }
+>>>>>>> Stashed changes
     //-----------------------------------
     //透明になって、消える
     //private Coroutine cor;

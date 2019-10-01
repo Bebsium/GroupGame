@@ -91,10 +91,17 @@ public class Doll_Queen : Doll
         }
         
         //右クリックすると、shootRange出てくる
+<<<<<<< Updated upstream
         if(!Input.GetMouseButton(1)){
             shootRange.SetActive(false);
         }
         if(Input.GetMouseButton(1) && !rose_reset)
+=======
+        //if(!Input.GetKey(KeyCode.F)){
+        //    shootRange.SetActive(false);
+        //}
+        if(Input.GetKey(KeyCode.F))
+>>>>>>> Stashed changes
         {
             //射擊方向
             ToMouse();

@@ -8,12 +8,21 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+<<<<<<< Updated upstream
   - component: {fileID: 6623863582975045730}
   - component: {fileID: 8118130768814382193}
   - component: {fileID: 9096553364919714111}
   - component: {fileID: 3236272405852403279}
   - component: {fileID: 3835871971838118641}
   - component: {fileID: 2743974573874633913}
+=======
+  - component: {fileID: 921378651424013604}
+  - component: {fileID: 8089236353316209885}
+  - component: {fileID: 5356289062641321782}
+  - component: {fileID: 3221126047794921720}
+  - component: {fileID: 6571168099376627768}
+  - component: {fileID: 9080848832957940761}
+>>>>>>> Stashed changes
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -91,10 +100,62 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
+<<<<<<< Updated upstream
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &3835871971838118641
 MonoBehaviour:
+=======
+  m_Size: {x: 13.417683, y: 7.74442, z: 11.638542}
+  m_Center: {x: -0.41729927, y: 4.8455744, z: -1.0167058}
+--- !u!65 &9080848832957940761
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 921378651424301316}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 14.080744, y: 8.087525, z: 12.601149}
+  m_Center: {x: -0.45766354, y: 4.774659, z: -1.1371827}
+--- !u!1 &921378651424301318
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 921378651424013606}
+  - component: {fileID: 921378651427437828}
+  - component: {fileID: 921378651426308036}
+  m_Layer: 0
+  m_Name: polySurface1887_Character_Mesh
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &921378651424013606
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 921378651424301318}
+  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 921378651424013604}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &921378651427437828
+MeshFilter:
+>>>>>>> Stashed changes
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}

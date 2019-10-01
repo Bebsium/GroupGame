@@ -527,12 +527,14 @@ public abstract class Doll : MonoBehaviourPun,IPunObservable,IPunOwnershipCallba
         //右クリックすると、shootRange出てくる
         if (!Input.GetMouseButton(1))
         {
+
             shootRange.SetActive(false);
         }
 
         if (item != null)
         {
             //GameObject temp = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            //Item size
             temp = Instantiate(item, gameObject.transform);
             temp.transform.position = transform.position + transform.forward * 0.5f;
             temp.name = "Putted Item";

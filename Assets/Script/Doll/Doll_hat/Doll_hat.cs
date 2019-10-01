@@ -51,6 +51,7 @@ public class Doll_hat : Doll
         {
             base.Move();
         }
+
     }
 
     protected override void Jump()
@@ -87,11 +88,19 @@ public class Doll_hat : Doll
             }
         }
 
+<<<<<<< Updated upstream
         //右クリックすると、shootRange出てくる
         if(!Input.GetMouseButton(1)){
             shootRange.SetActive(false);
         }
         if(Input.GetMouseButton(1) && !used)
+=======
+        //Fを押すと、shootRange出てくる
+        //if(!Input.GetKey(KeyCode.F)){
+        //    shootRange.SetActive(false);
+        //}
+        if(Input.GetKey(KeyCode.F) && !ishat)
+>>>>>>> Stashed changes
         {
             //射擊方向
             ToMouse();
